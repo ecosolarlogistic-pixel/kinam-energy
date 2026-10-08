@@ -239,8 +239,23 @@ input[type="range"]::-moz-range-thumb { width: 24px; height: 24px; border: 0; bo
 .crossed li { padding: 9px 0 9px 26px; position: relative; color: var(--muted); border-top: 1px solid var(--line-2); }
 .crossed li::before, .crossed li::after { content: ""; position: absolute; left: 2px; top: 21px; width: 12px; height: 1.5px; background: #FF8A8A; transform: rotate(45deg); }
 .crossed li::after { transform: rotate(-45deg); }
+.eaas__pairs { margin-top: 2em; }
+.eaas__head, .eaas__pairs li { display: grid; grid-template-columns: 1fr 1.25fr; gap: 28px; }
+.eaas__head h3 { margin: 0 0 .6em; }
+.eaas__head h3:last-child { color: var(--green); filter: brightness(1.35); }
+.eaas__pairs ul { list-style: none; padding: 0; margin: 0; }
+.eaas__pairs li { padding: 14px 0; border-top: 1px solid var(--line-2); align-items: start; }
+.eaas__pairs .no, .eaas__pairs .yes { position: relative; padding-left: 34px; }
+.eaas__pairs .no { color: var(--muted); }
+.eaas__pairs .no::before, .eaas__pairs .no::after { content: ""; position: absolute; left: 6px; top: 13px; width: 13px; height: 1.6px; background: #FF8A8A; transform: rotate(45deg); }
+.eaas__pairs .no::after { transform: rotate(-45deg); }
+.eaas__pairs .yes { color: var(--text); font-weight: 500; }
+.eaas__pairs .yes::before { content: ""; position: absolute; left: 0; top: 2px; width: 24px; height: 24px; border-radius: 50%; background: #2ED158 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat; box-shadow: 0 0 0 4px rgba(46, 209, 88, .18), 0 0 14px rgba(46, 209, 88, .45); }
 @media (max-width: 900px) { .eaas { grid-template-columns: 1fr; } }
-@media (max-width: 520px) { .eaas__cols { grid-template-columns: 1fr; } }
+@media (max-width: 560px) {
+  .eaas__head { display: none; }
+  .eaas__pairs li { grid-template-columns: 1fr; gap: 8px; }
+}
 
 /* Formularios */
 .calc, .form { background: rgba(7,23,42,.85); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(22px, 3vw, 36px); }
