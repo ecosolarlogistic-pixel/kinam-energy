@@ -7,7 +7,7 @@ Construido a partir del brief maestro de desarrollo web, el Manual Corporativo (
 ## Estructura
 
 ```
-index.html            Página principal (10 secciones del brief)
+index.html            Página principal (brief completo + información técnica de la presentación)
 404.html              Página de error
 CNAME                 Dominio personalizado para GitHub Pages
 assets/css/styles.css Sistema visual
@@ -23,7 +23,7 @@ Cualquier `git push` a la rama `main` se publica automáticamente en GitHub Page
 
 - Confirmar correo, WhatsApp y enlace de agenda en `assets/js/main.js` (`CONTACT`).
 - El formulario abre el correo del visitante (`mailto`). Para recibir envíos directos, conectar un servicio de formularios (Formspree, Basin, etc.).
-- Validar con el equipo técnico y jurídico todas las cifras (capacidad, escalamiento) antes de difundir el sitio.
+- Validar con el equipo técnico y jurídico todas las cifras (capacidad, buffer de 40 h, 10,000 RPM, 95%, 69 kV, rango térmico, escalamiento) antes de difundir el sitio.
 - Sustituir los módulos de certificaciones y casos de éxito cuando haya información verificada.
 
 ## DNS (en el proveedor del dominio)

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>KINAM Energy | Digital Power: energía autónoma para operaciones críticas</title>
-  <meta name="description" content="KINAM Digital Power: infraestructura energética autónoma, modular y digital para centros de datos, industria, telecomunicaciones y comunidades remotas. Energía como Servicio.">
+  <meta name="description" content="KINAM Digital Power: autogeneración cinética empaquetada en contenedor. Energía continua, in situ y modular para centros de datos, industria, telecomunicaciones y comunidades remotas, bajo el modelo Energía como Servicio.">
   <link rel="canonical" href="https://www.kinamenergy.com/">
   <meta name="theme-color" content="#07172A">
   <script>document.documentElement.classList.add("js")</script>
@@ -16,14 +16,14 @@
   <meta property="og:locale" content="es_MX">
   <meta property="og:site_name" content="KINAM Energy">
   <meta property="og:title" content="KINAM Digital Power | Energía sin límites">
-  <meta property="og:description" content="La electricidad evoluciona de un recurso físico a un activo digital puro. Infraestructura energética autónoma para operaciones críticas.">
+  <meta property="og:description" content="La electricidad evoluciona de un recurso físico a un activo digital puro. Energía autónoma, continua y modular para operaciones críticas.">
   <meta property="og:url" content="https://www.kinamenergy.com/">
   <meta property="og:image" content="https://www.kinamenergy.com/assets/img/og.jpg">
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="/assets/img/banner.webp">
   <link rel="stylesheet" href="/assets/css/styles.css">
 
@@ -45,13 +45,20 @@
         "name": "Energía como Servicio (EaaS)",
         "provider": {"@id": "https://www.kinamenergy.com/#org"},
         "serviceType": "Generación energética autónoma in situ",
-        "description": "Infraestructura energética modular, operada y mantenida por KINAM, con pago por energía consumida según contrato."
+        "description": "Módulos de autogeneración cinética en contenedor, operados y mantenidos por KINAM, con pago por kWh consumido según contrato."
+      },
+      {
+        "@type": "Product",
+        "name": "Módulo KINAM Digital Power",
+        "brand": {"@id": "https://www.kinamenergy.com/#org"},
+        "description": "Sistema de autogeneración cinética empaquetado en contenedor marítimo, con salida monofásica, bifásica o trifásica a 50 o 60 Hz."
       }
     ]
   }
   </script>
 </head>
 <body>
+  <div class="env" aria-hidden="true"><div class="env__grid"></div><div class="env__glow"></div></div>
   <a class="skip" href="#main">Saltar al contenido</a>
 
   <header class="nav" id="top">
@@ -65,9 +72,9 @@
       <nav id="menu" class="nav__menu" aria-label="Principal">
         <a href="#solucion">Solución</a>
         <a href="#tecnologia">Tecnología</a>
-        <a href="#sectores">Sectores</a>
+        <a href="#escalabilidad">Escalabilidad</a>
         <a href="#eaas">Energía como Servicio</a>
-        <a class="btn btn--primary btn--sm" href="#contacto">Solicitar diagnóstico</a>
+        <a class="btn btn--primary btn--sm" href="#contacto">Agendar asesoría</a>
       </nav>
     </div>
   </header>
@@ -76,158 +83,262 @@
     <!-- 01 Hero -->
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero__bg" aria-hidden="true"></div>
-      <svg class="hero__wave" viewBox="0 0 1200 120" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M0 60 Q 75 0 150 60 T 300 60 T 450 60 T 600 60 T 750 60 T 900 60 T 1050 60 T 1200 60" />
-      </svg>
+      <canvas class="hero__field" aria-hidden="true"></canvas>
       <div class="wrap hero__content">
-        <p class="eyebrow">KINAM Digital Power</p>
-        <h1 id="hero-title">La electricidad evoluciona de un recurso físico a un activo digital puro.</h1>
-        <p class="lead">Independencia energética para operaciones críticas. Sin combustibles. Sin dependencias tácticas.</p>
-        <div class="hero__ctas">
+        <p class="kicker rise">KINAM Digital Power</p>
+        <h1 id="hero-title" class="rise">La electricidad evoluciona de un recurso físico a un <span class="glow">activo digital puro.</span></h1>
+        <p class="lead rise">Independencia energética para operaciones críticas. Sin combustibles. Sin dependencias tácticas.</p>
+        <div class="hero__ctas rise">
           <a class="btn btn--primary" href="#contacto">Solicitar diagnóstico energético</a>
-          <a class="btn btn--ghost" href="#tecnologia">Conocer la tecnología</a>
+          <a class="btn btn--ghost" href="#onda">Conocer la tecnología</a>
         </div>
-        <p class="hero__slogan">Energía sin límites</p>
+        <p class="hero__slogan rise">Energía sin límites</p>
       </div>
+      <a class="hero__scroll" href="#cifras" aria-label="Bajar a las cifras clave"><span></span></a>
+    </section>
+
+    <!-- Cifras -->
+    <section class="figures" id="cifras" aria-label="Cifras clave">
+      <div class="wrap figures__grid">
+        <div class="figure reveal"><span class="figure__num" data-count="1880">1,880</span><span class="figure__unit">kW</span><p>Capacidad por unidad a 60 Hz*</p></div>
+        <div class="figure reveal"><span class="figure__num" data-count="0">0</span><span class="figure__unit">combustibles</span><p>Sin sol, sin viento y sin fósiles como fuente externa</p></div>
+        <div class="figure reveal"><span class="figure__num" data-count="40">40</span><span class="figure__unit">h</span><p>Buffer interno de respaldo*</p></div>
+        <div class="figure reveal"><span class="figure__num" data-count="7.2" data-decimals="1">7.2</span><span class="figure__unit">MW</span><p>Con cuatro unidades en paralelo*</p></div>
+      </div>
+      <p class="wrap note">* Especificaciones de referencia. Cada valor se confirma en la evaluación de ingeniería del proyecto.</p>
     </section>
 
     <!-- 02 Problema -->
     <section class="section" id="problema" aria-labelledby="problema-title">
-      <div class="wrap">
-        <p class="eyebrow">El problema</p>
-        <h2 id="problema-title">El fin de las infraestructuras frágiles, costosas y dependientes</h2>
-        <p class="section__intro">Las operaciones críticas siguen atadas a redes eléctricas lejanas, combustibles y equipos de conversión pesados. Cada eslabón suma costo y riesgo.</p>
+      <div class="wrap problem">
+        <div class="problem__head">
+          <p class="kicker">El problema</p>
+          <h2 id="problema-title">El fin de las infraestructuras frágiles, costosas y dependientes</h2>
+          <p class="section__intro">Hoy la energía de una operación crítica viaja cientos de kilómetros, pasa por subestaciones, transformadores y rectificadores, y depende de combustibles o del clima. Cada eslabón suma costo y un punto de falla.</p>
+          <ul class="pains">
+            <li class="reveal"><span class="mono">01</span>Costos de instalación extremos</li>
+            <li class="reveal"><span class="mono">02</span>Pérdidas de transmisión</li>
+            <li class="reveal"><span class="mono">03</span>Vulnerabilidad de red</li>
+            <li class="reveal"><span class="mono">04</span>Riesgo operativo y financiero</li>
+          </ul>
+        </div>
         <div class="compare reveal">
           <div class="compare__head" aria-hidden="true">
-            <span>Dimensión</span><span>Paradigma convencional</span><span>Enfoque KINAM</span>
+            <span>Dimensión</span><span>Paradigma convencional</span><span>Realidad KINAM</span>
           </div>
           <dl class="compare__rows">
-            <div class="compare__row"><dt>Fuente de energía</dt><dd class="old"><span class="sr-only">Convencional: </span>Combustible fósil o dependiente del clima</dd><dd class="new"><span class="sr-only">KINAM: </span>Autogeneración cinética continua</dd></div>
+            <div class="compare__row"><dt>Fuente de energía</dt><dd class="old"><span class="sr-only">Convencional: </span>Fósil o dependiente del clima</dd><dd class="new"><span class="sr-only">KINAM: </span>Autogeneración cinética continua</dd></div>
             <div class="compare__row"><dt>Infraestructura</dt><dd class="old"><span class="sr-only">Convencional: </span>Subestaciones y líneas de alta tensión</dd><dd class="new"><span class="sr-only">KINAM: </span>Entrega directa in situ en baja y media tensión</dd></div>
-            <div class="compare__row"><dt>Pérdidas</dt><dd class="old"><span class="sr-only">Convencional: </span>Pérdidas por transmisión y vulnerabilidad de red</dd><dd class="new"><span class="sr-only">KINAM: </span>Generación junto a la carga</dd></div>
             <div class="compare__row"><dt>Calidad de onda</dt><dd class="old"><span class="sr-only">Convencional: </span>Ruido e inestabilidad</dd><dd class="new"><span class="sr-only">KINAM: </span>Onda reconstruida digitalmente</dd></div>
-            <div class="compare__row"><dt>Riesgo financiero</dt><dd class="old"><span class="sr-only">Convencional: </span>Alta inversión inicial (CapEx)</dd><dd class="new"><span class="sr-only">KINAM: </span>Inversión inicial reducida según contrato EaaS</dd></div>
+            <div class="compare__row"><dt>Riesgo financiero</dt><dd class="old"><span class="sr-only">Convencional: </span>Alto CapEx e inversión hundida</dd><dd class="new"><span class="sr-only">KINAM: </span>Pago por kWh consumido bajo contrato</dd></div>
           </dl>
         </div>
       </div>
     </section>
 
-    <!-- 03 Solución -->
-    <section class="section section--alt" id="solucion" aria-labelledby="solucion-title">
-      <div class="wrap split">
-        <div>
-          <p class="eyebrow">La solución KINAM</p>
-          <h2 id="solucion-title">Autogeneración cinética empaquetada</h2>
-          <p>Un sistema de generación compacto, en formato de contenedor marítimo, que entrega energía continua directamente donde se consume. Sin sol, sin viento y sin combustibles fósiles como fuente externa.</p>
-          <ul class="cards cards--2">
-            <li class="card"><h3>Autonomía</h3><p>Operación independiente de la red pública.</p></li>
-            <li class="card"><h3>Entrega in situ</h3><p>La energía se genera junto a la carga.</p></li>
-            <li class="card"><h3>Energía continua</h3><p>Diseñada para carga base ininterrumpida.</p></li>
-            <li class="card"><h3>Formato compacto</h3><p>Contenedor transportable, instalable en distintas latitudes y altitudes.</p></li>
-          </ul>
-          <div class="spec">
-            <p class="spec__label">Capacidad referencial por unidad</p>
-            <div class="spec__grid">
-              <div><span class="spec__num">hasta 1,880 kW</span><span>a 60 Hz</span></div>
-              <div><span class="spec__num">hasta 1,566 kW</span><span>a 50 Hz</span></div>
-            </div>
-            <p class="note">Especificación de referencia. La capacidad final depende del diseño, la carga y las condiciones de cada proyecto, y se confirma en la evaluación de ingeniería.</p>
+    <!-- Firma: de energía bruta a onda digital (scroll) -->
+    <section class="wave" id="onda" aria-labelledby="onda-title">
+      <div class="wave__sticky">
+        <div class="wrap wave__inner">
+          <div class="wave__copy">
+            <p class="kicker">Electrónica Powerlift</p>
+            <h2 id="onda-title">De energía bruta a una onda digital limpia</h2>
+            <ol class="wave__steps">
+              <li data-step="0" class="is-on"><span class="mono">1. Captura</span>Un convertidor analógico-digital intercepta la energía generada.</li>
+              <li data-step="1"><span class="mono">2. Muestreo</span>Más de un millón de muestras por segundo.</li>
+              <li data-step="2"><span class="mono">3. Resolución</span>Análisis y reconstrucción digital en 24 bits.</li>
+              <li data-step="3"><span class="mono">4. Salida</span>Energía uniforme, sin ruido, lista para cargas críticas.</li>
+            </ol>
+          </div>
+          <div class="wave__stage">
+            <canvas id="wave-canvas" role="img" aria-label="Una onda irregular se transforma en una onda sinusoidal limpia a medida que avanzas"></canvas>
+            <div class="wave__labels" aria-hidden="true"><span>Energía bruta</span><span>Onda digital</span></div>
+            <div class="wave__meter" aria-hidden="true"><i></i></div>
           </div>
         </div>
-        <figure class="media reveal">
-          <img src="/assets/img/sistema.webp" alt="Vista explotada del módulo KINAM en contenedor con el tren de generación y la electrónica de potencia" width="1600" height="893" loading="lazy" decoding="async">
-        </figure>
+      </div>
+    </section>
+
+    <!-- 03 Solución -->
+    <section class="section" id="solucion" aria-labelledby="solucion-title">
+      <div class="wrap">
+        <div class="solution">
+          <div class="solution__copy">
+            <p class="kicker">La solución KINAM</p>
+            <h2 id="solucion-title">Autogeneración cinética empaquetada</h2>
+            <p>Un sistema de generación completo dentro de un contenedor marítimo. Se instala junto a tu operación y entrega energía firme y continua donde la necesitas, sin depender del sol, del viento ni de combustibles fósiles.</p>
+          </div>
+          <figure class="solution__media reveal">
+            <img src="/assets/img/sistema.webp" alt="Vista explotada del contenedor KINAM con el tren de generación, la electrónica de potencia y sus capacidades a 50 y 60 Hz" width="1600" height="893" loading="lazy" decoding="async">
+          </figure>
+        </div>
+        <ul class="caps">
+          <li class="reveal"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="14"/><path d="M20 8v12l8 5"/></svg><h3>Autonomía total</h3><p>Opera sin conexión a la red pública.</p></li>
+          <li class="reveal"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 30h28M10 30V14l10-6 10 6v16"/><path d="M18 30v-8h4v8"/></svg><h3>Entrega in situ</h3><p>La energía se genera junto a la carga, sin pérdidas de transmisión.</p></li>
+          <li class="reveal"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20c4-10 8-10 12 0s8 10 12 0 6-8 8-4"/></svg><h3>Energía firme y continua</h3><p>Pensada para carga base ininterrumpida, día y noche.</p></li>
+          <li class="reveal"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="5" y="12" width="30" height="16" rx="1"/><path d="M11 12v16M17 12v16M23 12v16M29 12v16"/></svg><h3>Formato contenedor</h3><p>Portátil e instalable en cualquier latitud o altitud.</p></li>
+        </ul>
+        <div class="spec reveal">
+          <div><span class="spec__num">hasta 1,880 kW</span><span class="mono">a 60 Hz</span></div>
+          <div><span class="spec__num">hasta 1,566 kW</span><span class="mono">a 50 Hz</span></div>
+          <p class="note">Capacidad de referencia por unidad. El valor final depende del diseño, la carga y las condiciones del sitio.</p>
+        </div>
       </div>
     </section>
 
     <!-- 04 Cómo funciona -->
-    <section class="section" id="tecnologia" aria-labelledby="tec-title">
+    <section class="section section--panel" id="tecnologia" aria-labelledby="tec-title">
       <div class="wrap">
-        <p class="eyebrow">Cómo funciona</p>
-        <h2 id="tec-title">Cuatro capas, una sola onda estable</h2>
-        <p class="section__intro">Selecciona una capa para ver su función dentro del sistema.</p>
+        <p class="kicker">Cómo funciona</p>
+        <h2 id="tec-title">Cuatro capas trabajando como una sola máquina</h2>
+        <p class="section__intro">Física, electrónica, datos y servicio. Elige una capa para ver qué hace.</p>
         <div class="layers">
           <div class="layers__tabs" role="tablist" aria-label="Capas de la arquitectura KINAM">
-            <button role="tab" id="tab-fisica" aria-controls="panel-fisica" aria-selected="true">01 Física</button>
-            <button role="tab" id="tab-digital" aria-controls="panel-digital" aria-selected="false" tabindex="-1">02 Digital</button>
-            <button role="tab" id="tab-datos" aria-controls="panel-datos" aria-selected="false" tabindex="-1">03 Datos</button>
-            <button role="tab" id="tab-servicio" aria-controls="panel-servicio" aria-selected="false" tabindex="-1">04 Servicio</button>
+            <button role="tab" id="tab-fisica" aria-controls="panel-fisica" aria-selected="true"><span class="mono">01</span>Física</button>
+            <button role="tab" id="tab-digital" aria-controls="panel-digital" aria-selected="false" tabindex="-1"><span class="mono">02</span>Digital</button>
+            <button role="tab" id="tab-datos" aria-controls="panel-datos" aria-selected="false" tabindex="-1"><span class="mono">03</span>Datos</button>
+            <button role="tab" id="tab-servicio" aria-controls="panel-servicio" aria-selected="false" tabindex="-1"><span class="mono">04</span>Servicio</button>
           </div>
-          <div class="layers__panels">
-            <div role="tabpanel" id="panel-fisica" aria-labelledby="tab-fisica" class="layer">
-              <div><h3>Ingeniería mecánica de ultra precisión</h3>
-              <p>Un tren de potencia de conjuntos motor/alternador acoplados en serie, con rotores de alta velocidad y suspensión magnética para reducir la fricción y prolongar la vida útil.</p></div>
-              <img src="/assets/img/tren-potencia.webp" alt="Tren de potencia KINAM con tres conjuntos motor-alternador y suspensión magnética" width="1600" height="893" loading="lazy" decoding="async">
+          <div role="tabpanel" id="panel-fisica" aria-labelledby="tab-fisica" class="layer">
+            <div>
+              <h3>Ingeniería mecánica sin fricción</h3>
+              <p>Tres conjuntos de motor y alternador acoplados en serie. Los rotores giran a velocidades de hasta 10,000 RPM sobre suspensión magnética, que elimina el contacto físico y prolonga la vida útil del equipo.</p>
+              <ul class="ticks"><li>Tren de potencia en serie</li><li>Suspensión magnética</li><li>Eficiencia mecánica de diseño del 95%*</li></ul>
             </div>
-            <div role="tabpanel" id="panel-digital" aria-labelledby="tab-digital" class="layer" hidden>
-              <div><h3>Electrónica de potencia</h3>
-              <p>Un convertidor de alta velocidad captura la energía bruta, la muestrea más de un millón de veces por segundo y la reconstruye con resolución de 24 bits para entregar una onda limpia, lista para cargas críticas.</p></div>
-              <img src="/assets/img/onda-digital.webp" alt="Diagrama de captura, muestreo, resolución y salida de la onda digital" width="1600" height="893" loading="lazy" decoding="async">
+            <img src="/assets/img/tren-potencia.webp" alt="Tren de potencia KINAM con tres conjuntos motor y alternador sobre suspensión magnética" width="1600" height="893" loading="lazy" decoding="async">
+          </div>
+          <div role="tabpanel" id="panel-digital" aria-labelledby="tab-digital" class="layer" hidden>
+            <div>
+              <h3>Powerlift: inteligencia en lugar de hardware pesado</h3>
+              <p>La electrónica de potencia sustituye a los transformadores físicos tradicionales. Maneja el voltaje por software y entrega corriente en milisegundos para proteger motores y reducir consumo.</p>
+              <ul class="ticks"><li>Sin transformadores tradicionales</li><li>Hasta 69 kV de manejo de voltaje*</li><li>Respuesta en milisegundos</li></ul>
             </div>
-            <div role="tabpanel" id="panel-datos" aria-labelledby="tab-datos" class="layer" hidden>
-              <div><h3>Medición y optimización</h3>
-              <p>Procesamiento continuo de datos de operación para medir consumo, anticipar picos y ajustar la entrega. Bancos de litio integrados respaldan el arranque autónomo y la gestión de demanda.</p></div>
-              <img src="/assets/img/resiliencia.webp" alt="Contenedor KINAM con bancos de litio integrados para arranque y gestión de picos" width="1600" height="893" loading="lazy" decoding="async">
+            <img src="/assets/img/powerlift.webp" alt="Transformador tradicional que se convierte en una tarjeta de electrónica de potencia Powerlift" width="1600" height="893" loading="lazy" decoding="async">
+          </div>
+          <div role="tabpanel" id="panel-datos" aria-labelledby="tab-datos" class="layer" hidden>
+            <div>
+              <h3>Medición y optimización continua</h3>
+              <p>El sistema mide cada ciclo y reconstruye la onda en tiempo real. Los mismos datos sirven para anticipar picos de demanda, ajustar la entrega y darte visibilidad de tu consumo.</p>
+              <ul class="ticks"><li>Más de 1 millón de muestras por segundo</li><li>Resolución de 24 bits</li><li>Monitoreo permanente</li></ul>
             </div>
-            <div role="tabpanel" id="panel-servicio" aria-labelledby="tab-servicio" class="layer" hidden>
-              <div><h3>Operación y mantenimiento</h3>
-              <p>KINAM opera, monitorea y mantiene la infraestructura. El cliente recibe energía y visibilidad de costos, sin gestionar el hardware.</p></div>
-              <img src="/assets/img/arquitectura.webp" alt="Arquitectura híbrida: física, electromagnetismo y procesamiento de datos hacia la autogeneración cíclica" width="1600" height="893" loading="lazy" decoding="async">
+            <img src="/assets/img/onda-digital.webp" alt="Diagrama de captura, muestreo, resolución y salida de la onda digital KINAM" width="1600" height="893" loading="lazy" decoding="async">
+          </div>
+          <div role="tabpanel" id="panel-servicio" aria-labelledby="tab-servicio" class="layer" hidden>
+            <div>
+              <h3>Operación y mantenimiento incluidos</h3>
+              <p>KINAM instala, opera, monitorea y mantiene la infraestructura. Tú recibes energía y una factura clara, sin gestionar equipos ni refacciones.</p>
+              <ul class="ticks"><li>Operación 24/7</li><li>Mantenimiento preventivo</li><li>Un solo responsable</li></ul>
             </div>
+            <img src="/assets/img/arquitectura.webp" alt="Arquitectura híbrida: mecánica, electromagnetismo y procesamiento de datos hacia la autogeneración" width="1600" height="893" loading="lazy" decoding="async">
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 05 Infraestructura crítica -->
-    <section class="section section--alt" id="sectores" aria-labelledby="sect-title">
-      <div class="wrap split split--rev">
-        <figure class="media reveal">
-          <img src="/assets/img/cc-directa.webp" alt="Comparativo entre la cadena red de CA, transformadores y rectificadores frente a la entrega directa de KINAM a servidores" width="1600" height="893" loading="lazy" decoding="async">
+    <!-- 05 Centros de datos -->
+    <section class="section" id="datos" aria-labelledby="dc-title">
+      <div class="wrap dc">
+        <div class="dc__copy">
+          <p class="kicker">Centros de datos</p>
+          <h2 id="dc-title">Corriente continua directa al servidor</h2>
+          <p>La cadena tradicional va de la red de CA a transformadores, rectificadores y fuentes de poder. KINAM puede entregar corriente continua directa a tus racks y quitar etapas de conversión.</p>
+        </div>
+        <svg class="chain" viewBox="0 0 640 150" role="img" aria-labelledby="chain-t">
+          <title id="chain-t">Cadena convencional de cuatro etapas frente a la entrega directa de KINAM</title>
+          <g class="chain__old">
+            <text x="0" y="22">Red CA</text><text x="150" y="22">Transformador</text><text x="330" y="22">Rectificador</text><text x="500" y="22">PSU</text>
+            <path d="M62 18h80M276 18h46M446 18h46" />
+          </g>
+          <g class="chain__new">
+            <text x="0" y="122">KINAM</text><text x="560" y="122">Servidores</text>
+            <path class="draw" d="M68 117 H550" />
+          </g>
+        </svg>
+        <ul class="dc__benefits">
+          <li class="reveal"><h3>Infraestructura</h3><p>Reduce la necesidad de fuentes de alimentación en cada servidor.</p></li>
+          <li class="reveal"><h3>Térmica</h3><p>Menos conversión significa menos calor dentro de la sala.</p></li>
+          <li class="reveal"><h3>Eficiencia</h3><p>Facturas de energía menores y mayor vida útil del hardware.</p></li>
+        </ul>
+        <p class="note">Disponible según la arquitectura eléctrica de cada centro de datos.</p>
+      </div>
+    </section>
+
+    <!-- 06 Resiliencia -->
+    <section class="section section--panel" id="resiliencia" aria-labelledby="res-title">
+      <div class="wrap res">
+        <figure class="res__media reveal">
+          <img src="/assets/img/resiliencia.webp" alt="Contenedor KINAM con bancos de litio integrados" width="1600" height="893" loading="lazy" decoding="async">
         </figure>
         <div>
-          <p class="eyebrow">Infraestructura crítica</p>
-          <h2 id="sect-title">Energía de calidad para lo que no puede detenerse</h2>
-          <p>Centros de datos, telecomunicaciones, manufactura, salud, operaciones remotas y servicios esenciales.</p>
-          <ul class="checks">
-            <li><strong>Resiliencia:</strong> respaldo integrado para arranque desde cero y continuidad ante eventos externos.</li>
-            <li><strong>Calidad energética:</strong> onda estable para equipos sensibles.</li>
-            <li><strong>Gestión de picos:</strong> absorción de demandas repentinas sin desestabilizar la red local.</li>
-            <li><strong>Menos infraestructura convencional:</strong> en centros de datos, posible entrega directa que reduce etapas de conversión, cuando el proyecto lo permite.</li>
-            <li><strong>Control industrial:</strong> protección perimetral y monitoreo permanente.</li>
-          </ul>
+          <p class="kicker">Resiliencia</p>
+          <h2 id="res-title">Preparado para picos de demanda y arranques en frío</h2>
+          <ol class="numbered">
+            <li class="reveal"><h3>Bancos de litio</h3><p>Dos sistemas integrados para el arranque autónomo desde cero.</p></li>
+            <li class="reveal"><h3>Buffer interno de 40 horas*</h3><p>Sostiene la operación ante cualquier evento externo.</p></li>
+            <li class="reveal"><h3>Gestión de picos</h3><p>Absorbe demandas repentinas de varios megawatts sin desestabilizar la red local.</p></li>
+          </ol>
         </div>
       </div>
     </section>
 
-    <!-- 06 Escalabilidad -->
+    <!-- 07 Escalabilidad -->
     <section class="section" id="escalabilidad" aria-labelledby="esc-title">
       <div class="wrap">
-        <p class="eyebrow">Escalabilidad</p>
-        <h2 id="esc-title">De una unidad a despliegues multi-MW</h2>
-        <p class="section__intro">Diseño modular plug-and-play. Las unidades se sincronizan en paralelo para crecer al ritmo de la demanda.</p>
-        <div class="scale reveal" role="img" aria-label="Escalamiento modular: 1 unidad 1.8 MW, 2 unidades 3.6 MW, 3 unidades 5.4 MW, 4 unidades 7.2 MW">
-          <div class="scale__step"><div class="scale__units"><i></i></div><strong>1.8 MW</strong><span>1 unidad</span></div>
-          <div class="scale__step"><div class="scale__units"><i></i><i></i></div><strong>3.6 MW</strong><span>2 unidades</span></div>
-          <div class="scale__step"><div class="scale__units"><i></i><i></i><i></i></div><strong>5.4 MW</strong><span>3 unidades</span></div>
-          <div class="scale__step"><div class="scale__units"><i></i><i></i><i></i><i></i></div><strong>7.2 MW</strong><span>4 unidades</span></div>
+        <div class="scale__head">
+          <div>
+            <p class="kicker">Escalabilidad</p>
+            <h2 id="esc-title">Más megawatts sin más infraestructura</h2>
+          </div>
+          <p class="section__intro">Diseño plug-and-play. Las unidades se sincronizan en paralelo, sin concentradores ni subestaciones, y crecen al ritmo de tu demanda.</p>
         </div>
-        <p class="note">Valores ilustrativos de expansión lineal. Cada despliegue está sujeto a evaluación de ingeniería. Salida monofásica, bifásica o trifásica a 50 o 60 Hz según el proyecto.</p>
+        <div class="scale" id="scale">
+          <div class="scale__track" aria-hidden="true">
+            <div class="unit"></div><div class="unit"></div><div class="unit"></div><div class="unit"></div>
+          </div>
+          <label for="units" class="scale__label">Unidades en paralelo: <strong id="units-out">2</strong></label>
+          <input type="range" id="units" min="1" max="4" step="1" value="2" aria-describedby="mw-out">
+          <p class="scale__mw"><span id="mw-out">3.6 MW</span> de capacidad de referencia</p>
+        </div>
+        <ul class="trio">
+          <li class="reveal"><h3>Plug-and-play</h3><p>Suma unidades de forma inmediata.</p></li>
+          <li class="reveal"><h3>Sincronización directa</h3><p>Conexión en paralelo sin subestaciones.</p></li>
+          <li class="reveal"><h3>Salida flexible</h3><p>Monofásica, bifásica o trifásica, a 50 o 60 Hz.</p></li>
+        </ul>
+        <p class="note">Valores ilustrativos de expansión lineal. Cada despliegue se valida con ingeniería.</p>
       </div>
     </section>
 
-    <!-- 07 EaaS -->
-    <section class="section section--alt" id="eaas" aria-labelledby="eaas-title">
-      <div class="wrap split">
+    <!-- 08 Seguridad -->
+    <section class="section section--panel" id="seguridad" aria-labelledby="seg-title">
+      <div class="wrap sec">
+        <div class="sec__copy">
+          <p class="kicker">Control y protección</p>
+          <h2 id="seg-title">Diseñado para entornos exigentes</h2>
+        </div>
+        <ul class="sec__list">
+          <li class="reveal"><span class="sec__big">-40 °C a +55 °C</span><h3>Rango térmico de operación*</h3><p>Operatividad mecánica en climas extremos.</p></li>
+          <li class="reveal"><span class="sec__big">Perímetro</span><h3>Protección física</h3><p>Sistemas de seguridad que blindan el hardware.</p></li>
+          <li class="reveal"><span class="sec__big">Antirrobo</span><h3>Protocolos de protección</h3><p>Respuesta ante intentos de intrusión no autorizada.</p></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 09 EaaS -->
+    <section class="section" id="eaas" aria-labelledby="eaas-title">
+      <div class="wrap eaas">
         <div>
-          <p class="eyebrow">Energy as a Service</p>
+          <p class="kicker">Energía como Servicio</p>
           <h2 id="eaas-title">Paga por la energía, no por la infraestructura</h2>
-          <ul class="checks">
-            <li>Inversión inicial reducida, según las condiciones del contrato.</li>
-            <li>Pago por kWh o por servicio consumido.</li>
-            <li>Operación y mantenimiento incluidos.</li>
-            <li>Visibilidad de costos y foco en disponibilidad.</li>
-          </ul>
+          <div class="eaas__cols">
+            <div>
+              <h3>Lo que no asumes</h3>
+              <ul class="crossed"><li>Compra de equipos</li><li>Logística global</li><li>Mantenimiento y reparaciones</li><li>Riesgo financiero de la inversión</li></ul>
+            </div>
+            <div>
+              <h3>Tu compromiso</h3>
+              <p>Pagas por los kWh consumidos bajo un contrato de largo plazo, con operación y servicio incluidos.</p>
+            </div>
+          </div>
         </div>
         <form class="calc reveal" id="calc" aria-labelledby="calc-title" novalidate>
           <h3 id="calc-title">Calculadora conceptual</h3>
@@ -238,50 +349,66 @@
           <label for="tariff">Costo actual por kWh (tu moneda)</label>
           <input id="tariff" name="tariff" type="number" inputmode="decimal" min="0" step="0.01" value="2.50">
           <output class="calc__out" for="kw hours tariff" aria-live="polite">
-            <span>Consumo anual estimado</span><strong id="out-kwh">—</strong>
-            <span>Gasto energético anual actual</span><strong id="out-cost">—</strong>
+            <span>Consumo anual estimado</span><strong id="out-kwh">0</strong>
+            <span>Gasto energético anual actual</span><strong id="out-cost">0</strong>
+            <span>Unidades KINAM de referencia</span><strong id="out-units">1</strong>
           </output>
-          <p class="note">Estimación ilustrativa con base en tus datos. No es una cotización. La tarifa KINAM se define en el diagnóstico energético.</p>
+          <p class="note">Estimación ilustrativa con tus datos. No es una cotización. La tarifa KINAM se define en el diagnóstico energético.</p>
         </form>
       </div>
     </section>
 
-    <!-- 08 Casos de uso -->
-    <section class="section" id="casos" aria-labelledby="casos-title">
+    <!-- 10 Casos de uso -->
+    <section class="section section--panel" id="casos" aria-labelledby="casos-title">
       <div class="wrap">
-        <p class="eyebrow">Casos de uso</p>
-        <h2 id="casos-title">Dónde aporta KINAM</h2>
-        <ul class="cards cards--3">
-          <li class="card reveal"><h3>Centros de datos</h3><p>Carga base estable, gestión de picos y menos etapas de conversión.</p></li>
-          <li class="card reveal"><h3>Industria 24/7</h3><p>Continuidad operativa para líneas de producción que no admiten cortes.</p></li>
-          <li class="card reveal"><h3>Comunidades aisladas</h3><p>Energía donde la red no llega o es inestable.</p></li>
-          <li class="card reveal"><h3>Telecomunicaciones</h3><p>Sitios remotos con suministro continuo y monitoreado.</p></li>
-          <li class="card reveal"><h3>Infraestructura pública crítica</h3><p>Hospitales, agua y servicios esenciales con respaldo resiliente.</p></li>
-          <li class="card reveal"><h3>Transición energética</h3><p>Reducción de la dependencia de combustibles fósiles.</p></li>
+        <p class="kicker">Casos de uso</p>
+        <h2 id="casos-title">Dónde KINAM cambia la operación</h2>
+        <ul class="uses">
+          <li class="reveal"><span class="mono">01</span><h3>Centros de datos</h3><p>Carga base estable, gestión de picos y menos etapas de conversión.</p></li>
+          <li class="reveal"><span class="mono">02</span><h3>Industria 24/7</h3><p>Continuidad para líneas que no admiten cortes.</p></li>
+          <li class="reveal"><span class="mono">03</span><h3>Comunidades aisladas</h3><p>Energía donde la red no llega o falla.</p></li>
+          <li class="reveal"><span class="mono">04</span><h3>Telecomunicaciones</h3><p>Sitios remotos con suministro continuo y monitoreado.</p></li>
+          <li class="reveal"><span class="mono">05</span><h3>Infraestructura pública</h3><p>Hospitales, agua y servicios esenciales con respaldo propio.</p></li>
+          <li class="reveal"><span class="mono">06</span><h3>Transición energética</h3><p>Menos dependencia de combustibles fósiles.</p></li>
         </ul>
       </div>
     </section>
 
-    <!-- 09 Confianza -->
-    <section class="section section--trust" id="confianza" aria-labelledby="conf-title">
-      <div class="wrap">
-        <p class="eyebrow eyebrow--green">Confianza y sostenibilidad</p>
-        <h2 id="conf-title">El poder de ser independiente, fuerte y sustentable</h2>
-        <ul class="cards cards--3">
-          <li class="card card--pending"><h3>Documentación técnica</h3><p>Fichas técnicas y dossier de inversión disponibles bajo solicitud.</p><a class="link" href="#contacto">Solicitar dossier</a></li>
-          <li class="card card--pending"><h3>Certificaciones</h3><p>Se publicarán aquí las certificaciones vigentes una vez verificadas.</p><span class="tag">En validación</span></li>
-          <li class="card card--pending"><h3>Casos de éxito</h3><p>Resultados de proyectos reales, con datos medidos y autorizados por cada cliente.</p><span class="tag">Próximamente</span></li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- 10 Conversión -->
-    <section class="section section--alt" id="contacto" aria-labelledby="contacto-title">
-      <div class="wrap split">
+    <!-- 11 Confianza -->
+    <section class="section trust" id="confianza" aria-labelledby="conf-title">
+      <div class="wrap trust__inner">
+        <svg class="venn" viewBox="0 0 300 270" role="img" aria-labelledby="venn-t">
+          <title id="venn-t">Convergencia de hardware avanzado, software de precisión y modelo EaaS</title>
+          <circle class="draw" cx="105" cy="95" r="80"/><circle class="draw" cx="195" cy="95" r="80"/><circle class="draw" cx="150" cy="175" r="80"/>
+          <text x="70" y="70">Hardware</text><text x="175" y="70">Software</text><text x="128" y="215">EaaS</text>
+          <circle class="venn__core" cx="150" cy="122" r="6"/>
+        </svg>
         <div>
-          <p class="eyebrow">Hablemos</p>
+          <p class="kicker kicker--green">Confianza y sostenibilidad</p>
+          <h2 id="conf-title">El poder de ser independiente, fuerte y sustentable</h2>
+          <p>Hardware avanzado, software de precisión y un modelo financiero sin fricción. La energía del mañana, operando hoy.</p>
+          <ul class="proof">
+            <li><h3>Documentación técnica</h3><p>Fichas técnicas y dossier de inversión bajo solicitud.</p><a class="link" href="#contacto">Solicitar dossier</a></li>
+            <li><h3>Certificaciones</h3><p>Se publicarán aquí las certificaciones vigentes una vez verificadas.</p><span class="tag">En validación</span></li>
+            <li><h3>Casos de éxito</h3><p>Resultados medidos y autorizados por cada cliente.</p><span class="tag">Próximamente</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12 Conversión -->
+    <section class="section cta" id="contacto" aria-labelledby="contacto-title">
+      <div class="cta__bg" aria-hidden="true"></div>
+      <div class="wrap cta__inner">
+        <div>
+          <p class="kicker">Hablemos</p>
           <h2 id="contacto-title">Diseñemos la independencia energética de tu operación</h2>
-          <p>Cuéntanos tu reto y un especialista te contactará para preparar un diagnóstico energético.</p>
+          <p>Cuéntanos tu reto. Un especialista revisará tu consumo y te propondrá un diagnóstico energético.</p>
+          <ol class="steps">
+            <li><span class="mono">01</span>Diagnóstico de consumo y sitio</li>
+            <li><span class="mono">02</span>Diseño de ingeniería y propuesta EaaS</li>
+            <li><span class="mono">03</span>Instalación, operación y servicio</li>
+          </ol>
           <ul class="contact" id="contact-links"></ul>
         </div>
         <form class="form" id="lead" novalidate>
@@ -299,7 +426,8 @@
             <div class="full"><label for="f-reto">Reto energético</label><textarea id="f-reto" name="reto" rows="4"></textarea></div>
           </div>
           <p class="form__error" id="lead-error" role="alert" hidden>Completa nombre, empresa e industria.</p>
-          <button class="btn btn--primary" type="submit">Hablar con un especialista</button>
+          <button class="btn btn--primary btn--block" type="submit">Hablar con un especialista</button>
+          <p class="note">Al enviar se abrirá tu correo con el mensaje listo para KINAM.</p>
         </form>
       </div>
     </section>
@@ -308,7 +436,10 @@
   <footer class="footer">
     <div class="wrap footer__inner">
       <img src="/assets/img/logo.webp" alt="KINAM Energy" width="134" height="60" loading="lazy">
-      <p class="note">Las cifras de capacidad, eficiencia y escalamiento son referenciales y se validan con el equipo técnico de KINAM en cada proyecto.</p>
+      <nav class="footer__nav" aria-label="Pie de página">
+        <a href="#solucion">Solución</a><a href="#tecnologia">Tecnología</a><a href="#eaas">EaaS</a><a href="#contacto">Contacto</a>
+      </nav>
+      <p class="note">Las cifras de capacidad, eficiencia, respaldo, rango térmico y escalamiento son referenciales y se validan con el equipo técnico de KINAM en cada proyecto.</p>
       <p>&copy; <span id="year">2026</span> KINAM Energy. Energía sin límites.</p>
     </div>
   </footer>
