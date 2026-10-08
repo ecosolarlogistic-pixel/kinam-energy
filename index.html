@@ -24,7 +24,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-  <link rel="preload" as="image" href="/assets/img/banner.webp">
+  <link rel="preload" as="image" href="/assets/img/banner-kinam.webp" media="(min-width: 701px)">
+  <link rel="preload" as="image" href="/assets/img/banner-kinam-1000.webp" media="(max-width: 700px)">
   <link rel="stylesheet" href="/assets/css/styles.css">
 
   <script type="application/ld+json">
@@ -37,7 +38,7 @@
         "name": "KINAM Energy",
         "alternateName": "KINAM Digital Power",
         "url": "https://www.kinamenergy.com/",
-        "logo": "https://www.kinamenergy.com/assets/img/logo.jpg",
+        "logo": "https://www.kinamenergy.com/assets/img/logo-kinam.png",
         "slogan": "Energía sin límites"
       },
       {
@@ -64,7 +65,7 @@
   <header class="nav" id="top">
     <div class="wrap nav__inner">
       <a class="nav__brand" href="/" aria-label="KINAM Energy, inicio">
-        <img src="/assets/img/logo.webp" alt="KINAM Energy, Energía sin límites" width="134" height="60">
+        <img src="/assets/img/logo-kinam.webp" alt="KINAM Energy, Energía sin límites" width="135" height="60">
       </a>
       <button class="nav__toggle" aria-expanded="false" aria-controls="menu">
         <span class="sr-only">Abrir menú</span><span aria-hidden="true"></span>
@@ -82,19 +83,24 @@
   <main id="main">
     <!-- 01 Hero -->
     <section class="hero" aria-labelledby="hero-title">
-      <div class="hero__bg" aria-hidden="true"></div>
-      <canvas class="hero__field" aria-hidden="true"></canvas>
-      <div class="wrap hero__content">
-        <p class="kicker rise">KINAM Digital Power</p>
-        <h1 id="hero-title" class="rise">La electricidad evoluciona de un recurso físico a un <span class="glow">activo digital puro.</span></h1>
-        <p class="lead rise">Independencia energética para operaciones críticas. Sin combustibles. Sin dependencias tácticas.</p>
-        <div class="hero__ctas rise">
-          <a class="btn btn--primary" href="#contacto">Solicitar diagnóstico energético</a>
-          <a class="btn btn--ghost" href="#onda">Conocer la tecnología</a>
+      <figure class="hero__banner">
+        <picture>
+          <source media="(max-width: 700px)" srcset="/assets/img/banner-kinam-1000.webp">
+          <img src="/assets/img/banner-kinam.webp" alt="KINAM Energy, Energía sin límites: paneles solares, aerogeneradores y una red de energía junto a un lago al anochecer" width="1983" height="793" fetchpriority="high">
+        </picture>
+      </figure>
+      <div class="hero__body">
+        <canvas class="hero__field" aria-hidden="true"></canvas>
+        <div class="wrap hero__content">
+          <p class="kicker rise">KINAM Digital Power</p>
+          <h1 id="hero-title" class="rise">La electricidad evoluciona de un recurso físico a un <span class="glow">activo digital puro.</span></h1>
+          <p class="lead rise">Independencia energética para operaciones críticas. Sin combustibles. Sin dependencias tácticas.</p>
+          <div class="hero__ctas rise">
+            <a class="btn btn--primary" href="#contacto">Solicitar diagnóstico energético</a>
+            <a class="btn btn--ghost" href="#onda">Conocer la tecnología</a>
+          </div>
         </div>
-        <p class="hero__slogan rise">Energía sin límites</p>
       </div>
-      <a class="hero__scroll" href="#cifras" aria-label="Bajar a las cifras clave"><span></span></a>
     </section>
 
     <!-- Cifras -->
@@ -435,7 +441,7 @@
 
   <footer class="footer">
     <div class="wrap footer__inner">
-      <img src="/assets/img/logo.webp" alt="KINAM Energy" width="134" height="60" loading="lazy">
+      <img src="/assets/img/logo-kinam.webp" alt="KINAM Energy" width="180" height="80" loading="lazy">
       <nav class="footer__nav" aria-label="Pie de página">
         <a href="#solucion">Solución</a><a href="#tecnologia">Tecnología</a><a href="#eaas">EaaS</a><a href="#contacto">Contacto</a>
       </nav>

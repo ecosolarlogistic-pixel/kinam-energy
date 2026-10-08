@@ -66,19 +66,6 @@ menu.addEventListener("click", (e) => {
   requestAnimationFrame(frame);
 })();
 
-// Parallax suave del fondo del hero
-(function heroParallax() {
-  const bg = $(".hero__bg");
-  if (!bg || reduce) return;
-  let last = -1;
-  function tick() {
-    const y = Math.min(window.scrollY, window.innerHeight);
-    if (y !== last) { bg.style.transform = `translate3d(0, ${y * 0.18}px, 0)`; last = y; }
-    requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
-})();
-
 // Firma: la onda bruta se vuelve onda digital al hacer scroll
 (function signatureWave() {
   const sec = $("#onda");
