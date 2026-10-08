@@ -352,14 +352,12 @@
           <input id="kw" name="kw" type="number" inputmode="decimal" min="1" value="500">
           <label for="hours">Horas de operación al día</label>
           <input id="hours" name="hours" type="number" inputmode="decimal" min="1" max="24" value="24">
-          <label for="tariff">Costo actual por kWh (tu moneda)</label>
-          <input id="tariff" name="tariff" type="number" inputmode="decimal" min="0" step="0.01" value="2.50">
-          <output class="calc__out" for="kw hours tariff" aria-live="polite">
+          <output class="calc__out" for="kw hours" aria-live="polite">
             <span>Consumo anual estimado</span><strong id="out-kwh">0</strong>
-            <span>Gasto energético anual actual</span><strong id="out-cost">0</strong>
+            <span>Consumo mensual estimado</span><strong id="out-month">0</strong>
             <span>Unidades KINAM de referencia</span><strong id="out-units">1</strong>
           </output>
-          <p class="note">Estimación ilustrativa con tus datos. No es una cotización. La tarifa KINAM se define en el diagnóstico energético.</p>
+          <p class="note">Estimación ilustrativa con tus datos. No es una cotización. El costo depende de la zona y se define en el diagnóstico energético.</p>
         </form>
       </div>
     </section>

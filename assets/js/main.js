@@ -211,10 +211,9 @@ const fmt = new Intl.NumberFormat("es-MX", { maximumFractionDigits: 0 });
 function updateCalc() {
   const kw = Math.max(parseFloat(calc.kw.value) || 0, 0);
   const hours = Math.min(Math.max(parseFloat(calc.hours.value) || 0, 0), 24);
-  const tariff = Math.max(parseFloat(calc.tariff.value) || 0, 0);
   const kwh = kw * hours * 365;
   $("#out-kwh").textContent = `${fmt.format(kwh)} kWh`;
-  $("#out-cost").textContent = `$${fmt.format(kwh * tariff)}`;
+  $("#out-month").textContent = `${fmt.format(kwh / 12)} kWh`;
   $("#out-units").textContent = Math.max(1, Math.ceil(kw / 1880));
 }
 calc.addEventListener("input", updateCalc);
