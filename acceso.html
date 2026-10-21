@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Acceso | KINAM Energy</title>
+  <meta name="description" content="Crea tu cuenta o inicia sesión para entrar al área de trabajo de KINAM Energy: evaluación técnica y portal de clientes.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#07172A">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/assets/css/portal.css">
+</head>
+<body class="auth">
+  <div class="env" aria-hidden="true"><div class="env__grid"></div><div class="env__glow"></div></div>
+
+  <header class="nav">
+    <div class="wrap nav__inner">
+      <a class="nav__brand" href="/" aria-label="KINAM Energy, inicio">
+        <img src="/assets/img/logo-kinam.webp" alt="KINAM Energy, Energía sin límites" width="135" height="60">
+      </a>
+      <a class="btn btn--ghost btn--sm" href="/">Volver al sitio</a>
+    </div>
+  </header>
+
+  <main class="auth__main" id="main">
+    <section class="auth__intro">
+      <p class="mono">ÁREA DE TRABAJO</p>
+      <h1 id="auth-title">Entra a tu área de trabajo</h1>
+      <p>Con tu cuenta KINAM puedes:</p>
+      <ul class="auth__list">
+        <li><strong>Evaluación técnica.</strong> Registra los datos de tu sitio y tu demanda energética para que el equipo técnico dimensione tu solución.</li>
+        <li><strong>Portal de clientes.</strong> Consulta el estado de tus evaluaciones, propuestas y documentos.</li>
+      </ul>
+      <p class="note">Tus datos se guardan en una base protegida y solo tú y el equipo de KINAM pueden verlos.</p>
+    </section>
+
+    <section class="form auth__card" aria-labelledby="auth-title">
+      <div class="auth__tabs" role="tablist" aria-label="Acceso">
+        <button role="tab" id="tab-login" aria-controls="panel-login" aria-selected="true">Iniciar sesión</button>
+        <button role="tab" id="tab-signup" aria-controls="panel-signup" aria-selected="false" tabindex="-1">Crear cuenta</button>
+      </div>
+
+      <p class="auth__offline" id="auth-offline" role="status" hidden>El acceso se está configurando. Vuelve a intentarlo en unos minutos o escríbenos a <a href="mailto:contacto@kinamenergy.com">contacto@kinamenergy.com</a>.</p>
+
+      <form id="panel-login" role="tabpanel" aria-labelledby="tab-login" novalidate>
+        <label for="login-email">Correo</label>
+        <input id="login-email" name="email" type="email" autocomplete="email" required>
+        <label for="login-pass">Contraseña</label>
+        <div class="pass">
+          <input id="login-pass" name="password" type="password" autocomplete="current-password" required>
+          <button type="button" class="pass__toggle" aria-controls="login-pass">Ver</button>
+        </div>
+        <p class="auth__msg" role="alert" hidden></p>
+        <button class="btn btn--primary btn--block" type="submit">Entrar al área de trabajo</button>
+        <p class="auth__alt"><button type="button" class="link" data-go="forgot">¿Olvidaste tu contraseña?</button></p>
+      </form>
+
+      <form id="panel-signup" role="tabpanel" aria-labelledby="tab-signup" novalidate hidden>
+        <div class="form__grid">
+          <div class="full">
+            <label for="su-name">Nombre completo</label>
+            <input id="su-name" name="full_name" autocomplete="name" required>
+          </div>
+          <div>
+            <label for="su-company">Empresa</label>
+            <input id="su-company" name="company" autocomplete="organization" required>
+          </div>
+          <div>
+            <label for="su-phone">Teléfono / WhatsApp</label>
+            <input id="su-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="10 dígitos" required>
+          </div>
+          <div class="full">
+            <label for="su-email">Correo de trabajo</label>
+            <input id="su-email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div class="full">
+            <label for="su-pass">Contraseña</label>
+            <div class="pass">
+              <input id="su-pass" name="password" type="password" autocomplete="new-password" minlength="8" required aria-describedby="su-pass-help">
+              <button type="button" class="pass__toggle" aria-controls="su-pass">Ver</button>
+            </div>
+            <p class="note" id="su-pass-help">Mínimo 8 caracteres.</p>
+          </div>
+          <div class="full check">
+            <input id="su-terms" name="terms" type="checkbox" required>
+            <label for="su-terms">Acepto que KINAM Energy use mis datos para contactarme sobre mi proyecto.</label>
+          </div>
+        </div>
+        <p class="auth__msg" role="alert" hidden></p>
+        <button class="btn btn--primary btn--block" type="submit">Crear mi cuenta</button>
+        <p class="note">Te enviaremos un correo para confirmar tu cuenta.</p>
+      </form>
+
+      <form id="panel-forgot" novalidate hidden>
+        <h2 class="auth__h2">Recuperar contraseña</h2>
+        <p class="note">Escribe tu correo y te enviaremos un enlace para crear una nueva.</p>
+        <label for="fg-email">Correo</label>
+        <input id="fg-email" name="email" type="email" autocomplete="email" required>
+        <p class="auth__msg" role="alert" hidden></p>
+        <button class="btn btn--primary btn--block" type="submit">Enviar enlace</button>
+        <p class="auth__alt"><button type="button" class="link" data-go="login">Volver a iniciar sesión</button></p>
+      </form>
+
+      <form id="panel-reset" novalidate hidden>
+        <h2 class="auth__h2">Nueva contraseña</h2>
+        <label for="rs-pass">Nueva contraseña</label>
+        <div class="pass">
+          <input id="rs-pass" name="password" type="password" autocomplete="new-password" minlength="8" required>
+          <button type="button" class="pass__toggle" aria-controls="rs-pass">Ver</button>
+        </div>
+        <p class="auth__msg" role="alert" hidden></p>
+        <button class="btn btn--primary btn--block" type="submit">Guardar y entrar</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__inner">
+      <p>&copy; <span id="year">2026</span> KINAM Energy. Energía sin límites.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
+  <script src="/assets/js/config.js" defer></script>
+  <script src="/assets/js/auth.js" defer></script>
+  <script src="/assets/js/acceso.js" defer></script>
+</body>
+</html>
