@@ -8,7 +8,7 @@
 
   // Áreas protegidas: clientes en /area/ y el equipo KINAM en /interno/.
   const AREAS = {
-    evaluacion: { label: "Evaluación técnica", path: "/area/#evaluacion" },
+    evaluacion: { label: "Evaluación técnica", path: "/area/#gestion" },
     interno: { label: "Interno", path: "/interno/" }
   };
 
