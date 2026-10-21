@@ -1,0 +1,28 @@
+/* KINAM Energy | documentos del expediente (vista en papel e impresión) */
+.doc { background: #fff; color: #1b2430; font: 15px/1.6 "Manrope", system-ui, sans-serif; padding: clamp(20px, 4vw, 48px); border-radius: 4px; }
+.doc h1 { font: 700 1.5rem/1.25 "Exo 2", system-ui, sans-serif; color: #07172A; margin: 0 0 6px; text-transform: uppercase; letter-spacing: .02em; max-width: none; }
+.doc h2 { font: 700 1.05rem "Exo 2", system-ui, sans-serif; color: #07172A; margin: 26px 0 8px; max-width: none; }
+.doc p { color: #1b2430; max-width: none; }
+.doc .mono { font: 600 .72rem "JetBrains Mono", monospace; letter-spacing: .08em; color: #0a7f95; }
+.doc .note { color: #5b6675; font-size: .82rem; }
+.doc__head { border-bottom: 2px solid #07172A; padding-bottom: 12px; margin-bottom: 20px; }
+.doc__head p { margin: 0; color: #5b6675; }
+.doc__right { text-align: right; }
+.doc__blank { background: #fff4c2; padding: 0 3px; border-radius: 2px; }
+.doc__list { padding-left: 1.3em; }
+.doc__list li { margin-bottom: .7em; text-align: justify; }
+.doc__sign { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 36px; }
+.doc__sign p { margin: 4px 0; }
+.doc__line { border-bottom: 1px solid #1b2430; min-height: 2.6em; display: flex; align-items: flex-end; padding-bottom: 4px; font-size: .85rem; }
+.doc__annex { page-break-before: always; margin-top: 40px; }
+.doc__table { width: 100%; border-collapse: collapse; }
+.doc__table th, .doc__table td { border: 1px solid #c9d1db; padding: 8px 10px; text-align: left; vertical-align: top; font-size: .9rem; color: #1b2430; background: #fff; text-transform: none; letter-spacing: 0; font-family: inherit; white-space: normal; }
+.doc__table th { width: 40%; background: #f2f5f8; font-weight: 600; }
+.doc__foot { margin-top: 28px; text-align: center; color: #5b6675; font-size: .8rem; }
+.doc .kv { display: grid; grid-template-columns: minmax(180px, 45%) 1fr; gap: 4px 16px; margin: 0; font-size: .88rem; }
+.doc .kv dt { color: #5b6675; }
+.doc .kv dd { margin: 0; color: #1b2430; font-weight: 600; }
+.doc section { break-inside: avoid; }
+.doc--print { max-width: 820px; margin: 0 auto; }
+@media print { .doc { padding: 0; } @page { margin: 18mm; } }
+@media (max-width: 640px) { .doc__sign { grid-template-columns: 1fr; } .doc .kv { grid-template-columns: 1fr; } .doc .kv dd { margin-bottom: 6px; } }

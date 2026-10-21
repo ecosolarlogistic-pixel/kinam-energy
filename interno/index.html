@@ -19,6 +19,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css">
   <link rel="stylesheet" href="/assets/css/portal.css">
+  <link rel="stylesheet" href="/assets/css/doc.css">
 </head>
 <body class="app is-loading">
   <header class="nav">
@@ -38,9 +39,11 @@
     <nav class="app__side" aria-label="Interno">
       <p class="app__side-title mono">CENTRO DE CONTROL</p>
       <a href="#resumen" data-view="resumen">Resumen</a>
+      <a href="#expedientes" data-view="expedientes">Clientes y proyectos</a>
+      <a href="#formatos" data-view="formatos">Formatos recibidos</a>
       <a href="#evaluaciones" data-view="evaluaciones">Evaluaciones técnicas</a>
-      <a href="#clientes" data-view="clientes">Clientes</a>
-      <a href="#equipo" data-view="equipo" data-admin hidden>Equipo</a>
+      <a href="#clientes" data-view="clientes">Cuentas registradas</a>
+      <a href="#equipo" data-view="equipo" data-admin hidden>Usuarios internos</a>
       <a href="#bitacora" data-view="bitacora" data-admin hidden>Bitácora de accesos</a>
     </nav>
 
@@ -63,12 +66,77 @@
           <div><strong data-stat="nuevas">0</strong><span>Recibidas sin revisar</span></div>
           <div><strong data-stat="revision">0</strong><span>En revisión</span></div>
           <div><strong data-stat="propuesta">0</strong><span>Con propuesta</span></div>
-          <div><strong data-stat="clientes">0</strong><span>Clientes registrados</span></div>
+          <div><strong data-stat="formatos">0</strong><span>Formatos por revisar</span></div>
         </div>
         <h2 class="app__h2">Últimas evaluaciones</h2>
         <div class="table-wrap"><table class="table" id="latest-table"></table></div>
         <h2 class="app__h2">Demanda por industria</h2>
         <ul class="bars" id="industry-bars"></ul>
+      </section>
+
+      <!-- Clientes y proyectos -->
+      <section class="view" id="view-expedientes" hidden>
+        <p class="mono">SEGUIMIENTO</p>
+        <h1>Clientes y proyectos</h1>
+        <div class="toolbar">
+          <label class="sr-only" for="ex-search">Buscar</label>
+          <input id="ex-search" type="search" placeholder="Buscar cliente, RFC, proyecto o ciudad">
+          <button class="btn btn--primary btn--sm" type="button" id="ex-new">Alta de cliente</button>
+          <button class="btn btn--ghost btn--sm" type="button" id="ex-export">Exportar CSV</button>
+        </div>
+        <div class="table-wrap"><table class="table table--click" id="ex-table"></table></div>
+
+        <div class="detail" id="ex-detail" hidden>
+          <div class="detail__head">
+            <h2 id="ex-title">Alta de cliente</h2>
+            <button class="link" type="button" id="ex-close">Cerrar</button>
+          </div>
+          <form class="form" id="ex-form" novalidate>
+            <div class="form__grid">
+              <div class="full"><label for="ex-razon">Nombre o razón social</label><input id="ex-razon" name="razon_social" required></div>
+              <div><label for="ex-rfc">RFC / Tax ID</label><input id="ex-rfc" name="rfc"></div>
+              <div><label for="ex-pais">País</label><input id="ex-pais" name="pais"></div>
+              <div class="full"><label for="ex-dom">Domicilio fiscal</label><input id="ex-dom" name="domicilio"></div>
+              <div><label for="ex-ciudad">Ciudad</label><input id="ex-ciudad" name="ciudad"></div>
+              <div><label for="ex-estado">Estado</label><input id="ex-estado" name="estado"></div>
+              <div class="full"><label for="ex-act">Actividad industrial</label><input id="ex-act" name="actividad"></div>
+              <div><label for="ex-rep">Representante legal</label><input id="ex-rep" name="representante"></div>
+              <div><label for="ex-cargo">Cargo</label><input id="ex-cargo" name="cargo"></div>
+              <div><label for="ex-tel">Teléfono</label><input id="ex-tel" name="telefono" type="tel"></div>
+              <div><label for="ex-mail">Correo de contacto</label><input id="ex-mail" name="email" type="email"></div>
+              <div><label for="ex-cuenta">Cuenta del cliente en el sitio</label><select id="ex-cuenta" name="user_id"></select></div>
+              <div><label for="ex-resp">Responsable KINAM</label><select id="ex-resp" name="responsable_kinam"></select></div>
+              <div class="full"><label for="ex-notas">Notas internas (el cliente no las ve)</label><textarea id="ex-notas" name="notas" rows="3"></textarea></div>
+            </div>
+            <p class="auth__msg" role="alert" hidden></p>
+            <button class="btn btn--primary" type="submit">Guardar cliente</button>
+          </form>
+
+          <div id="ex-projects-wrap" hidden>
+            <h3 class="mono">PROYECTOS</h3>
+            <form class="form toolbar toolbar--form" id="ex-proj-form" novalidate>
+              <div><label for="ep-nombre">Nuevo proyecto</label><input id="ep-nombre" name="nombre" required placeholder="Nombre del proyecto o sitio"></div>
+              <div><label for="ep-ubic">Ubicación</label><input id="ep-ubic" name="ubicacion"></div>
+              <button class="btn btn--ghost" type="submit">Agregar proyecto</button>
+              <p class="auth__msg full" role="alert" hidden></p>
+            </form>
+            <div id="ex-projects" class="evlist"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Formatos recibidos -->
+      <section class="view" id="view-formatos" hidden>
+        <p class="mono">SEGUIMIENTO</p>
+        <h1>Formatos recibidos</h1>
+        <p>Requisitos de instalación y cartas compromiso de todos los proyectos. Abre uno para revisarlo, cambiar su estado o pedir correcciones al cliente.</p>
+        <div class="toolbar">
+          <label class="sr-only" for="fm-tipo">Formato</label>
+          <select id="fm-tipo"><option value="">Todos los formatos</option><option value="requisitos">Requisitos de instalación</option><option value="carta">Carta compromiso</option></select>
+          <label class="sr-only" for="fm-status">Estado</label>
+          <select id="fm-status"><option value="">Todos los estados</option><option value="borrador">Borrador</option><option value="enviado">Enviado</option><option value="revision">En revisión</option><option value="observado">Con observaciones</option><option value="aprobado">Aprobado</option></select>
+        </div>
+        <div class="table-wrap"><table class="table table--click" id="fm-table"></table></div>
       </section>
 
       <!-- Evaluaciones -->
@@ -119,7 +187,8 @@
       <!-- Clientes -->
       <section class="view" id="view-clientes" hidden>
         <p class="mono">COMERCIAL</p>
-        <h1>Clientes</h1>
+        <h1>Cuentas registradas</h1>
+        <p>Personas que crearon su cuenta en el sitio. La empresa de cada una aparece en Clientes y proyectos cuando hace su alta de cliente.</p>
         <div class="toolbar">
           <label class="sr-only" for="cl-search">Buscar</label>
           <input id="cl-search" type="search" placeholder="Buscar nombre, empresa, correo o teléfono">
@@ -128,23 +197,40 @@
         <div class="table-wrap"><table class="table" id="cl-table"></table></div>
       </section>
 
-      <!-- Equipo (solo Dirección) -->
+      <!-- Usuarios internos (solo Dirección) -->
       <section class="view" id="view-equipo" hidden>
         <p class="mono">ADMINISTRACIÓN</p>
-        <h1>Equipo</h1>
-        <p>Da acceso a Interno a las personas del equipo. Primero deben crear su cuenta en <a href="/acceso.html?modo=registro">kinamenergy.com/acceso.html</a>.</p>
-        <form class="form toolbar toolbar--form" id="team-form" novalidate>
-          <div>
-            <label for="tm-email">Correo de la persona</label>
-            <input id="tm-email" name="email" type="email" required>
+        <h1>Usuarios internos</h1>
+        <p>Da de alta a las personas del equipo con su área y, si lo necesitan, su correo <strong>@kinamenergy.com</strong>. La misma contraseña sirve para Interno y para su correo.</p>
+        <div class="tabs" role="tablist">
+          <button type="button" role="tab" aria-selected="true" data-tab="tm-create">Nuevo usuario</button>
+          <button type="button" role="tab" aria-selected="false" data-tab="tm-grant">Dar acceso a cuenta existente</button>
+        </div>
+        <form class="form" id="tm-create" novalidate>
+          <div class="form__grid">
+            <div class="full"><label for="tc-name">Nombre completo</label><input id="tc-name" name="full_name" required autocomplete="off"></div>
+            <div><label for="tc-email">Correo</label><input id="tc-email" name="email" type="email" required autocomplete="off" placeholder="nombre.apellido@kinamenergy.com"></div>
+            <div><label for="tc-phone">Celular (WhatsApp)</label><input id="tc-phone" name="phone" type="tel" inputmode="tel" placeholder="10 dígitos"></div>
+            <div><label for="tc-area">Área</label><select id="tc-area" name="area" data-areas></select></div>
+            <div><label for="tc-sup">Supervisor</label><select id="tc-sup" name="supervisor_id" data-supervisors></select></div>
+            <div class="full"><p class="note" data-area-help></p></div>
+            <div class="full">
+              <label for="tc-pass">Contraseña (Interno y correo)</label>
+              <div class="pw"><input id="tc-pass" name="password" autocomplete="new-password" required><button class="btn btn--ghost btn--sm" type="button" id="tc-gen">Generar</button></div>
+              <p class="note">Mínimo 8 caracteres. Para crear también el correo: de 8 a 50, con mayúscula, minúscula, número y símbolo.</p>
+            </div>
+            <div class="full check" id="tc-mail-wrap"><input id="tc-mail" name="mailbox" type="checkbox" checked><label for="tc-mail">Crear también su correo @kinamenergy.com en Hostinger</label></div>
           </div>
-          <div>
-            <label for="tm-role">Rol</label>
-            <select id="tm-role" name="role"><option value="equipo">Equipo (gestiona evaluaciones y clientes)</option><option value="admin">Dirección (además gestiona al equipo)</option></select>
-          </div>
+          <p class="auth__msg" role="alert" hidden></p>
+          <button class="btn btn--primary" type="submit">Crear usuario</button>
+        </form>
+        <form class="form toolbar toolbar--form" id="tm-grant" novalidate hidden>
+          <div><label for="tg-email">Correo de una cuenta ya registrada</label><input id="tg-email" name="email" type="email" required></div>
+          <div><label for="tg-area">Área</label><select id="tg-area" name="area" data-areas></select></div>
           <button class="btn btn--primary" type="submit">Dar acceso</button>
           <p class="auth__msg full" role="alert" hidden></p>
         </form>
+        <h2 class="app__h2">Equipo</h2>
         <div class="table-wrap"><table class="table" id="tm-table"></table></div>
       </section>
 
@@ -158,9 +244,26 @@
     </main>
   </div>
 
+  <div class="modal" id="fm-modal" hidden role="dialog" aria-modal="true" aria-labelledby="fmm-title">
+    <div class="modal__card">
+      <div class="detail__head"><h2 id="fmm-title"></h2><button class="link" type="button" id="fmm-close">Cerrar</button></div>
+      <p class="note" id="fmm-meta"></p>
+      <form class="form" id="fmm-form" novalidate>
+        <div class="form__grid">
+          <div><label for="fmm-status">Estado</label><select id="fmm-status" name="status"><option value="borrador">Borrador</option><option value="enviado">Enviado</option><option value="revision">En revisión</option><option value="observado">Con observaciones (el cliente puede corregir)</option><option value="aprobado">Aprobado</option></select></div>
+          <div class="full"><label for="fmm-notes">Comentarios para el cliente</label><textarea id="fmm-notes" name="kinam_notes" rows="3"></textarea></div>
+        </div>
+        <p class="auth__msg" role="alert" hidden></p>
+        <div class="fm__actions"><button class="btn btn--primary" type="submit">Guardar</button><button class="btn btn--ghost" type="button" id="fmm-print">Imprimir / PDF</button></div>
+      </form>
+      <div class="doc" id="fmm-doc"></div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
   <script src="/assets/js/config.js" defer></script>
   <script src="/assets/js/auth.js" defer></script>
+  <script src="/assets/js/formatos.js" defer></script>
   <script src="/assets/js/interno.js" defer></script>
   <script src="/assets/js/pwa.js" defer></script>
 </body>

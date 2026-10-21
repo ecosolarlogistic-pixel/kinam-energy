@@ -19,6 +19,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/styles.css">
   <link rel="stylesheet" href="/assets/css/portal.css">
+  <link rel="stylesheet" href="/assets/css/doc.css">
 </head>
 <body class="app is-loading">
   <header class="nav">
@@ -38,8 +39,10 @@
   <div class="wrap wrap--wide app__layout">
     <nav class="app__side" aria-label="Área de trabajo">
       <a href="#inicio" data-view="inicio">Inicio</a>
-      <a href="#evaluacion" data-view="evaluacion">Evaluación técnica</a>
-      <a href="#mis-evaluaciones" data-view="mis-evaluaciones">Mis evaluaciones</a>
+      <p class="app__side-title mono">EVALUACIÓN TÉCNICA</p>
+      <a href="#gestion" data-view="gestion">Gestión</a>
+      <a href="#requisitos" data-view="requisitos">Requisitos de instalación</a>
+      <a href="#carta" data-view="carta">Carta compromiso</a>
       <a href="#cuenta" data-view="cuenta">Mi cuenta</a>
     </nav>
 
@@ -50,24 +53,70 @@
       <section class="view" id="view-inicio" hidden>
         <p class="mono">ÁREA DE TRABAJO</p>
         <h1>Hola, <span data-first-name>bienvenido</span></h1>
-        <p class="lead">Desde aquí registras tus evaluaciones técnicas y das seguimiento a tus proyectos con KINAM.</p>
-        <div class="tiles">
-          <a class="tile" href="#evaluacion">
+        <p class="lead">Desde aquí das de alta tu empresa, registras tus proyectos y llenas los formatos que KINAM necesita para cada uno.</p>
+        <ol class="steps" id="steps"></ol>
+        <div class="tiles tiles--3">
+          <a class="tile" href="#gestion">
             <span class="mono">01</span>
-            <h2>Evaluación técnica</h2>
-            <p>Describe tu sitio, tu demanda y tu fuente de energía actual. El equipo técnico la revisa y prepara tu propuesta.</p>
+            <h2>Gestión</h2>
+            <p>Alta de tu empresa, tus proyectos y tus evaluaciones técnicas.</p>
           </a>
-          <a class="tile" href="#mis-evaluaciones">
+          <a class="tile" href="#requisitos">
             <span class="mono">02</span>
-            <h2>Mis evaluaciones</h2>
-            <p>Consulta el estado de tus evaluaciones y los comentarios del equipo técnico de KINAM.</p>
+            <h2>Requisitos de instalación</h2>
+            <p>Ficha técnica y Site Readiness del emplazamiento para los contenedores de 40 pies.</p>
+          </a>
+          <a class="tile" href="#carta">
+            <span class="mono">03</span>
+            <h2>Carta compromiso</h2>
+            <p>Carta de intención para la adquisición de energía eléctrica, con su Anexo A.</p>
           </a>
         </div>
         <div class="stats" aria-live="polite">
           <div><strong id="stat-total">0</strong><span>Evaluaciones enviadas</span></div>
-          <div><strong id="stat-review">0</strong><span>En revisión</span></div>
-          <div><strong id="stat-proposal">0</strong><span>Con propuesta</span></div>
+          <div><strong id="stat-projects">0</strong><span>Proyectos</span></div>
+          <div><strong id="stat-forms">0</strong><span>Formatos enviados</span></div>
         </div>
+      </section>
+
+      <!-- Gestión -->
+      <section class="view" id="view-gestion" hidden>
+        <p class="mono">EVALUACIÓN TÉCNICA · GESTIÓN</p>
+        <h1>Gestión</h1>
+
+        <h2 class="app__h2">1. Alta de cliente</h2>
+        <p class="note" id="cl-hint">Registra los datos de tu empresa. Con ellos se llenan automáticamente tus formatos.</p>
+        <form class="form" id="cliente-form" novalidate>
+          <div class="form__grid">
+            <div class="full"><label for="cl-razon">Nombre o razón social</label><input id="cl-razon" name="razon_social" required autocomplete="organization"></div>
+            <div><label for="cl-rfc">RFC / Tax ID</label><input id="cl-rfc" name="rfc" autocapitalize="characters"></div>
+            <div><label for="cl-pais">País</label><input id="cl-pais" name="pais" value="México"></div>
+            <div class="full"><label for="cl-dom">Domicilio fiscal</label><input id="cl-dom" name="domicilio" autocomplete="street-address"></div>
+            <div><label for="cl-ciudad">Ciudad</label><input id="cl-ciudad" name="ciudad"></div>
+            <div><label for="cl-estado">Estado</label><input id="cl-estado" name="estado"></div>
+            <div class="full"><label for="cl-act">Actividad industrial</label><input id="cl-act" name="actividad" placeholder="Ej. Centro de datos, minería, cerámica…"></div>
+            <div><label for="cl-rep">Representante legal</label><input id="cl-rep" name="representante"></div>
+            <div><label for="cl-cargo">Cargo</label><input id="cl-cargo" name="cargo"></div>
+            <div><label for="cl-tel">Teléfono</label><input id="cl-tel" name="telefono" type="tel"></div>
+            <div><label for="cl-mail">Correo de contacto</label><input id="cl-mail" name="email" type="email"></div>
+          </div>
+          <p class="auth__msg" role="alert" hidden></p>
+          <button class="btn btn--primary" type="submit">Guardar datos de la empresa</button>
+        </form>
+
+        <h2 class="app__h2">2. Mis proyectos</h2>
+        <form class="form toolbar toolbar--form" id="proyecto-form" novalidate>
+          <div><label for="pr-nombre">Nombre del proyecto o sitio</label><input id="pr-nombre" name="nombre" required placeholder="Ej. Planta Querétaro"></div>
+          <div><label for="pr-ubic">Ubicación</label><input id="pr-ubic" name="ubicacion" placeholder="Ciudad, estado"></div>
+          <button class="btn btn--primary" type="submit">Agregar proyecto</button>
+          <p class="auth__msg full" role="alert" hidden></p>
+        </form>
+        <div id="project-list" class="evlist" aria-live="polite"></div>
+
+        <h2 class="app__h2">3. Evaluaciones técnicas</h2>
+        <p><a class="btn btn--ghost btn--sm" href="#evaluacion">Nueva evaluación técnica</a></p>
+        <div id="eval-list" class="evlist" aria-live="polite"></div>
+        <p class="note" id="eval-empty" hidden>Todavía no tienes evaluaciones. <a href="#evaluacion">Crea la primera</a>.</p>
       </section>
 
       <!-- Evaluación técnica -->
@@ -80,6 +129,7 @@
           <fieldset>
             <legend>Proyecto</legend>
             <div class="form__grid">
+              <div class="full"><label for="ev-proyecto">Proyecto</label><select id="ev-proyecto" name="proyecto_id"><option value="">Nuevo proyecto con el nombre de abajo</option></select></div>
               <div class="full"><label for="ev-name">Nombre del proyecto o sitio</label><input id="ev-name" name="project_name" required placeholder="Ej. Centro de datos Querétaro"></div>
               <div>
                 <label for="ev-industry">Industria</label>
@@ -149,13 +199,57 @@
         </form>
       </section>
 
-      <!-- Mis evaluaciones -->
-      <section class="view" id="view-mis-evaluaciones" hidden>
-        <p class="mono">MIS EVALUACIONES</p>
-        <h1>Mis evaluaciones y proyectos</h1>
-        <p>Aquí ves el avance de cada evaluación. El equipo de KINAM actualiza el estado y te contacta cuando tu propuesta está lista.</p>
-        <div id="eval-list" class="evlist" aria-live="polite"></div>
-        <p class="note" id="eval-empty" hidden>Todavía no tienes evaluaciones. <a href="#evaluacion">Crea la primera</a>.</p>
+      <!-- Requisitos de instalación -->
+      <section class="view" id="view-requisitos" hidden>
+        <p class="mono">EVALUACIÓN TÉCNICA · REQUISITOS DE INSTALACIÓN</p>
+        <h1>Requisitos preliminares de instalación</h1>
+        <p>Ficha de información técnica y Site Readiness para el suministro energético con contenedores de 40 pies (1,56 MW a 50 Hz · 1,88 MW a 60 Hz por unidad). Si no conoces un dato, déjalo vacío: puedes guardar y volver después.</p>
+        <div class="fm__bar" data-form="requisitos">
+          <div><label for="rq-proyecto">Proyecto</label><select id="rq-proyecto" data-project></select></div>
+          <div class="fm__state"><span data-status></span><span class="note" data-progress></span></div>
+        </div>
+        <p class="fm__notes" data-notes hidden></p>
+        <p class="note" data-need hidden>Primero da de alta tu empresa y un proyecto en <a href="#gestion">Gestión</a>.</p>
+        <form class="form evalform fm" id="rq-form" novalidate>
+          <div data-fields></div>
+          <p class="auth__msg" role="alert" hidden></p>
+          <div class="fm__actions">
+            <button class="btn btn--ghost" type="button" data-save>Guardar borrador</button>
+            <button class="btn btn--primary" type="submit">Enviar a KINAM</button>
+            <button class="btn btn--ghost" type="button" data-print>Imprimir / PDF</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Carta compromiso -->
+      <section class="view" id="view-carta" hidden>
+        <p class="mono">EVALUACIÓN TÉCNICA · CARTA COMPROMISO</p>
+        <h1>Carta compromiso</h1>
+        <p>Carta compromiso para la adquisición de energía eléctrica con vigencia comercial propuesta de diez años. Llena los datos, revisa la carta y acéptala para enviarla a KINAM.</p>
+        <div class="fm__bar" data-form="carta">
+          <div><label for="ct-proyecto">Proyecto</label><select id="ct-proyecto" data-project></select></div>
+          <div class="fm__state"><span data-status></span><span class="note" data-progress></span></div>
+        </div>
+        <p class="fm__notes" data-notes hidden></p>
+        <p class="note" data-need hidden>Primero da de alta tu empresa y un proyecto en <a href="#gestion">Gestión</a>.</p>
+        <form class="form evalform fm" id="ct-form" novalidate>
+          <div data-fields></div>
+          <h2 class="app__h2">Vista previa</h2>
+          <div class="doc" id="ct-preview"></div>
+          <fieldset class="fm__sec fm__sign">
+            <legend>Aceptación</legend>
+            <div class="form__grid">
+              <div><label for="ct-firmante">Nombre de quien firma</label><input id="ct-firmante" name="firmado_por" autocomplete="name"></div>
+              <div class="full check"><input id="ct-acepto" type="checkbox"><label for="ct-acepto">Declaro que tengo facultades para firmar en nombre del Consumidor y acepto el contenido de esta carta compromiso.</label></div>
+            </div>
+          </fieldset>
+          <p class="auth__msg" role="alert" hidden></p>
+          <div class="fm__actions">
+            <button class="btn btn--ghost" type="button" data-save>Guardar borrador</button>
+            <button class="btn btn--primary" type="submit">Firmar y enviar a KINAM</button>
+            <button class="btn btn--ghost" type="button" data-print>Imprimir / PDF</button>
+          </div>
+        </form>
       </section>
 
       <!-- Mi cuenta -->
@@ -179,6 +273,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
   <script src="/assets/js/config.js" defer></script>
   <script src="/assets/js/auth.js" defer></script>
+  <script src="/assets/js/formatos.js" defer></script>
   <script src="/assets/js/area.js" defer></script>
   <script src="/assets/js/pwa.js" defer></script>
 </body>
