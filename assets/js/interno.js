@@ -5,7 +5,7 @@
   const { client, ready, message, staffRole } = window.KinamAuth;
   const F = window.KinamFormatos;
   const CFG = window.KINAM_AUTH || {};
-  const VIEWS = ["resumen", "expedientes", "formatos", "evaluaciones", "clientes", "equipo", "bitacora"];
+  const VIEWS = ["panel", "resumen", "expedientes", "formatos", "evaluaciones", "clientes", "equipo", "bitacora"];
   const ADMIN_VIEWS = ["equipo", "bitacora"];
   const STATUS = { recibida: "Recibida", revision: "En revisión", propuesta: "Con propuesta", cerrada: "Cerrada" };
   const FIELDS = [
@@ -59,11 +59,12 @@
   // Navegación
   function route() {
     let view = location.hash.slice(1);
-    if (!VIEWS.includes(view) || (ADMIN_VIEWS.includes(view) && role !== "admin")) view = "resumen";
+    if (!VIEWS.includes(view) || (ADMIN_VIEWS.includes(view) && role !== "admin")) view = "panel";
     $$(".view").forEach((s) => { s.hidden = s.id !== "view-" + view; });
     $$(".app__side a").forEach((a) => a.setAttribute("aria-current", a.dataset.view === view ? "page" : "false"));
     if (view === "equipo") loadTeam();
     if (view === "formatos") renderFormatos();
+    document.dispatchEvent(new CustomEvent("kinam:view", { detail: view }));
     if (view === "bitacora") loadLog();
     window.scrollTo(0, 0);
   }
@@ -77,7 +78,7 @@
       client.from("proyectos").select("*").order("created_at", { ascending: false }),
       client.from("formatos").select("*").order("updated_at", { ascending: false }),
       client.from("seguimiento").select("*").order("at", { ascending: false }).limit(1000),
-      client.from("staff").select("user_id, role, area")
+      client.from("staff").select("user_id, role, area, supervisor_id")
     ]);
     if (ev.error) throw ev.error;
     evals = ev.data || [];
@@ -534,6 +535,9 @@
     try { if (!sessionStorage.getItem("kinam-log")) { await client.from("access_log").insert({ user_agent: navigator.userAgent }); sessionStorage.setItem("kinam-log", "1"); } } catch (_) { /* la bitácora no bloquea el panel */ }
     window.addEventListener("hashchange", route);
     try { await loadData(); } catch (err) { $("#main").insertAdjacentHTML("afterbegin", `<p class="auth__msg">No se pudieron cargar los datos: ${esc(message(err))}</p>`); }
+    // Mi panel (panel.js) arranca con este contexto; puede cargar antes o después que este archivo.
+    window.KinamInterno = { client, user, role, staff, profiles: clients, proyectos, empresas, AREAS };
+    document.dispatchEvent(new CustomEvent("kinam:interno", { detail: window.KinamInterno }));
     route();
   });
 })();

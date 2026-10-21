@@ -38,6 +38,7 @@
   <div class="wrap wrap--wide app__layout">
     <nav class="app__side" aria-label="Interno">
       <p class="app__side-title mono">CENTRO DE CONTROL</p>
+      <a href="#panel" data-view="panel">Mi panel <span class="count" id="pn-count" hidden></span></a>
       <a href="#resumen" data-view="resumen">Resumen</a>
       <a href="#expedientes" data-view="expedientes">Clientes y proyectos</a>
       <a href="#formatos" data-view="formatos">Formatos recibidos</a>
@@ -56,6 +57,58 @@
         <h1>Tu cuenta no tiene acceso interno</h1>
         <p class="lead">Este panel es solo para el equipo de KINAM. Si formas parte del equipo, pide a Dirección que habilite tu correo.</p>
         <a class="btn btn--primary" href="/area/">Ir a mi área de trabajo</a>
+      </section>
+
+      <!-- Mi panel -->
+      <section class="view" id="view-panel" hidden>
+        <p class="mono">MI PANEL DE CONTROL</p>
+        <h1>Hola, <span id="pn-first">equipo</span></h1>
+        <p class="lead" id="pn-area"></p>
+        <div class="tiles tiles--3">
+          <a class="tile" id="pn-mail" href="https://mail.hostinger.com/" target="_blank" rel="noopener">
+            <span class="mono">CORREO</span>
+            <h2>Mi correo</h2>
+            <p id="pn-mail-addr">Abre tu correo @kinamenergy.com en Hostinger.</p>
+          </a>
+          <button class="tile" type="button" data-new-act>
+            <span class="mono">AGENDA</span>
+            <h2>Agendar actividad</h2>
+            <p>Tarea, reunión, llamada o visita para ti o para otra persona del equipo.</p>
+          </button>
+          <button class="tile" type="button" id="pn-ics">
+            <span class="mono">CALENDARIO</span>
+            <h2>Llevar a mi calendario</h2>
+            <p>Descarga tus actividades (.ics) para Google Calendar, Outlook o el calendario del celular.</p>
+          </button>
+        </div>
+        <div class="stats stats--4" aria-live="polite">
+          <div><strong id="pn-today">0</strong><span>Para hoy</span></div>
+          <div><strong id="pn-late">0</strong><span>Atrasadas</span></div>
+          <div><strong id="pn-week">0</strong><span>Próximos 7 días</span></div>
+          <div><strong id="pn-mine">0</strong><span>Asignadas por mí, abiertas</span></div>
+        </div>
+
+        <div class="pn">
+          <div class="pn__cal">
+            <div class="cal__bar">
+              <h2 class="app__h2" id="cal-title"></h2>
+              <div class="cal__nav">
+                <button class="btn btn--ghost btn--sm" type="button" data-cal="-1" aria-label="Mes anterior">‹</button>
+                <button class="btn btn--ghost btn--sm" type="button" data-cal="0">Hoy</button>
+                <button class="btn btn--ghost btn--sm" type="button" data-cal="1" aria-label="Mes siguiente">›</button>
+              </div>
+              <label class="sr-only" for="cal-who">Ver</label>
+              <select id="cal-who"></select>
+            </div>
+            <div class="cal" id="cal" role="grid"></div>
+          </div>
+          <div class="pn__side">
+            <h2 class="app__h2">Mis pendientes</h2>
+            <ul class="acts" id="pn-todo"></ul>
+            <h2 class="app__h2">Asignadas por mí</h2>
+            <ul class="acts" id="pn-sent"></ul>
+          </div>
+        </div>
       </section>
 
       <!-- Resumen -->
@@ -244,6 +297,35 @@
     </main>
   </div>
 
+  <div class="modal" id="act-modal" hidden role="dialog" aria-modal="true" aria-labelledby="act-title">
+    <div class="modal__card">
+      <div class="detail__head"><h2 id="act-title">Agendar actividad</h2><button class="link" type="button" id="act-close">Cerrar</button></div>
+      <p class="note" id="act-meta"></p>
+      <form class="form" id="act-form" novalidate>
+        <div class="form__grid">
+          <div class="full"><label for="ac-titulo">Actividad</label><input id="ac-titulo" name="titulo" required maxlength="200" placeholder="Ej. Visita técnica al sitio"></div>
+          <div><label for="ac-asignado">Asignar a</label><select id="ac-asignado" name="asignado_a" required></select></div>
+          <div><label for="ac-tipo">Tipo</label><select id="ac-tipo" name="tipo"><option value="tarea">Tarea</option><option value="reunion">Reunión</option><option value="llamada">Llamada</option><option value="visita">Visita</option><option value="instalacion">Instalación</option><option value="otro">Otro</option></select></div>
+          <div><label for="ac-fecha">Fecha</label><input id="ac-fecha" name="fecha" type="date" required></div>
+          <div><label for="ac-prioridad">Prioridad</label><select id="ac-prioridad" name="prioridad"><option value="media">Media</option><option value="alta">Alta</option><option value="baja">Baja</option></select></div>
+          <div><label for="ac-hini">Hora de inicio</label><input id="ac-hini" name="hini" type="time" value="09:00"></div>
+          <div><label for="ac-hfin">Hora de fin</label><input id="ac-hfin" name="hfin" type="time" value="10:00"></div>
+          <div class="full check"><input id="ac-dia" name="todo_el_dia" type="checkbox"><label for="ac-dia">Todo el día</label></div>
+          <div><label for="ac-proyecto">Proyecto (opcional)</label><select id="ac-proyecto" name="proyecto_id"></select></div>
+          <div><label for="ac-ubic">Lugar o enlace</label><input id="ac-ubic" name="ubicacion" placeholder="Dirección, sala o liga de videollamada"></div>
+          <div class="full"><label for="ac-desc">Detalle</label><textarea id="ac-desc" name="descripcion" rows="3"></textarea></div>
+          <div data-close-only><label for="ac-estado">Estado</label><select id="ac-estado" name="estado"><option value="pendiente">Pendiente</option><option value="en_curso">En curso</option><option value="terminada">Terminada</option><option value="cancelada">Cancelada</option></select></div>
+          <div class="full" data-close-only><label for="ac-nota">Nota de cierre</label><textarea id="ac-nota" name="nota_cierre" rows="2" placeholder="Qué se hizo, acuerdos, siguientes pasos"></textarea></div>
+        </div>
+        <p class="auth__msg" role="alert" hidden></p>
+        <div class="fm__actions">
+          <button class="btn btn--primary" type="submit">Guardar</button>
+          <button class="btn btn--ghost" type="button" id="ac-ics">Agregar a mi calendario (.ics)</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div class="modal" id="fm-modal" hidden role="dialog" aria-modal="true" aria-labelledby="fmm-title">
     <div class="modal__card">
       <div class="detail__head"><h2 id="fmm-title"></h2><button class="link" type="button" id="fmm-close">Cerrar</button></div>
@@ -265,6 +347,7 @@
   <script src="/assets/js/auth.js" defer></script>
   <script src="/assets/js/formatos.js" defer></script>
   <script src="/assets/js/interno.js" defer></script>
+  <script src="/assets/js/panel.js" defer></script>
   <script src="/assets/js/pwa.js" defer></script>
 </body>
 </html>
