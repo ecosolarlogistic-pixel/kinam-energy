@@ -417,7 +417,24 @@
   $("#fmm-close").addEventListener("click", () => { $("#fm-modal").hidden = true; openFm = null; });
   $("#fm-modal").addEventListener("click", (e) => { if (e.target.id === "fm-modal") $("#fmm-close").click(); });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("#fm-modal").hidden) $("#fmm-close").click(); });
-  $("#fmm-print").addEventListener("click", () => openFm && F.print(FNAME[openFm.tipo], formatoHTML(openFm)));
+  // Reporte PDF del formato abierto: ver o enviar al cliente por WhatsApp / correo
+  const reportArgs = () => {
+    const p = proyecto(openFm.proyecto_id);
+    return [openFm.tipo, openFm.data, { id: openFm.id, proyecto_id: p.id, proyecto: p.nombre, cliente: empresa(p.cliente_id).razon_social, estado: F.ESTADOS[openFm.status], enviado: openFm.submitted_at,
+      firma: openFm.tipo === "carta" && openFm.firmado_at ? { por: openFm.firmado_por, at: openFm.firmado_at } : null }];
+  };
+  const busy = async (btn, label, job) => {
+    const txt = btn.textContent;
+    btn.disabled = true; btn.textContent = label;
+    try { await job(); } catch (err) { say($("#fmm-form"), "No se pudo generar el PDF: " + message(err)); }
+    finally { btn.disabled = false; btn.textContent = txt; }
+  };
+  $("#fmm-pdf").addEventListener("click", (e) => openFm && busy(e.currentTarget, "Generando…", () => window.KinamReporte.view(...reportArgs())));
+  $$("[data-fsend]").forEach((b) => b.addEventListener("click", (e) => openFm && busy(e.currentTarget, "Preparando…", async () => {
+    const c = empresa(proyecto(openFm.proyecto_id).cliente_id);
+    const r = await window.KinamReporte.send(b.dataset.fsend, ...reportArgs(), { client, nombre: (c.representante || "").split(" ")[0], phone: c.telefono, email: c.email });
+    if (r.link) say($("#fmm-form"), `Se abrió ${b.dataset.fsend === "whatsapp" ? "WhatsApp" : "el correo"} con la liga segura al PDF${c.razon_social ? " para " + c.razon_social : ""} (válida 30 días).`, true);
+  })));
   $("#fmm-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const f = e.currentTarget;

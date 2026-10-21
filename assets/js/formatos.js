@@ -237,53 +237,67 @@
       ${REQUISITOS.map((s, i) => `<section><h2>${i + 1}. ${esc(s.t)}</h2><dl class="kv">${s.fields.map((x) => `<dt>${esc(x.l)}</dt><dd>${esc(show(x, data)) || "—"}</dd>`).join("")}</dl></section>`).join("")}`;
   }
 
-  // Texto de la carta con los datos capturados (los vacíos quedan entre corchetes).
+  // Texto de la carta (plantilla Carta Compromiso Kinam). Cada párrafo es una lista de partes:
+  // texto fijo o { k, ph } = dato capturado o, si falta, su marcador entre corchetes.
+  // Lo usan la vista previa (HTML) y el reporte PDF.
+  function cartaValues(d) {
+    const v = { ...d };
+    if (d.fecha) v.fecha_txt = new Date(d.fecha + "T12:00:00").toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" });
+    const rep = [d.representante, d.cargo].filter(Boolean).join(", ");
+    if (rep) v.repr = rep;
+    return v;
+  }
+  const P = (k, ph) => ({ k, ph });
+  const CARTA_TEXTO = {
+    titulo: "Carta compromiso para la adquisición de energía eléctrica",
+    subtitulo: "Vigencia comercial propuesta de diez años",
+    lugar: [P("ciudad", "Ciudad"), ", ", P("estado", "Estado"), ", a ", P("fecha_txt", "día de mes de año"), "."],
+    saludo: "A quien corresponda:",
+    intro: ["Por medio de la presente, ", P("consumidor", "NOMBRE O RAZÓN SOCIAL DEL CONSUMIDOR"), ", con RFC ", P("rfc", "RFC"), ", domicilio en ", P("domicilio", "DOMICILIO"), ", representada en este acto por ", P("repr", "NOMBRE Y CARGO"), ", en lo sucesivo el “Consumidor”, manifiesta su interés y compromiso para celebrar el instrumento contractual definitivo de suministro y adquisición de energía eléctrica con Kinam Energy, representada en México por Eco Solar Logist Mx, RFC ESL2310027M9, en lo sucesivo el “Proveedor”."],
+    compromiso: ["El Consumidor se compromete a adquirir la energía eléctrica requerida para los centros de carga descritos en el Anexo A, por un plazo de diez (10) años, contado a partir de la fecha de inicio de suministro que se establezca en el contrato definitivo, sujeto a las siguientes condiciones:"],
+    clausulas: [
+      ["Objeto.", ["El Proveedor suministrará y el Consumidor adquirirá energía eléctrica bajo la modalidad jurídicamente aplicable, incluidos, en su caso, los atributos ambientales, productos asociados y Certificados de Energías Limpias que se pacten en el contrato definitivo."]],
+      ["Volumen comprometido.", ["El volumen estimado será de ", P("volumen_mwh", "_____"), " MWh anuales, con una demanda máxima estimada de ", P("demanda_mw", "_____"), " MW, para el o los centros de carga indicados en el Anexo A. El perfil de consumo, las tolerancias, los mecanismos de ajuste y las consecuencias por desviaciones se definirán en el contrato definitivo y sus anexos técnicos."]],
+      ["Precio y contraprestación.", ["Las partes acordarán el precio de la energía, moneda, indexación, cargos regulados, impuestos, garantías, facturación y forma de pago. Esta carta no fija una tarifa definitiva ni sustituye las condiciones que correspondan a las autoridades competentes."]],
+      ["Condiciones regulatorias.", ["La eficacia del suministro estará sujeta a que el Proveedor, sus afiliadas o terceros autorizados mantengan los permisos, autorizaciones y registros exigibles; a la viabilidad de interconexión y acceso a las redes; y al cumplimiento de las disposiciones aplicables."]],
+      ["Cumplimiento normativo.", ["Las partes observarán la Constitución Política de los Estados Unidos Mexicanos, la Ley del Sector Eléctrico, la Ley de Planeación y Transición Energética, la Ley de la Comisión Nacional de Energía, sus reglamentos, disposiciones administrativas, el Código de Red, las reglas del Mercado Eléctrico Mayorista y demás normativa aplicable durante la relación contractual."]],
+      ["Autoridades competentes.", ["Nada de lo previsto en esta carta constituye una autorización, permiso, garantía de despacho, interconexión, transmisión, distribución o suministro otorgada por autoridad alguna. Permanecen a salvo las atribuciones de la Secretaría de Energía, la Comisión Nacional de Energía, el Centro Nacional de Control de Energía, la Comisión Federal de Electricidad y demás autoridades competentes."]],
+      ["Información y colaboración.", ["El Consumidor proporcionará la información técnica, de consumo, titularidad de los centros de carga y documentación razonablemente necesaria. El Proveedor proporcionará evidencia razonable de su capacidad legal, técnica y operativa para la modalidad de suministro propuesta."]],
+      ["Confidencialidad.", ["Las partes mantendrán confidencial la información técnica, comercial, financiera y documental intercambiada con motivo de esta carta, salvo requerimiento legal o de autoridad competente."]],
+      ["Vigencia y formalización.", ["Esta carta tendrá vigencia de ", P("vigencia", "90/120/180 días naturales"), " a partir de su firma. Durante dicho plazo, las partes negociarán y procurarán formalizar el contrato definitivo. Las obligaciones económicas y de suministro nacerán únicamente con la firma de ese contrato, salvo las obligaciones de confidencialidad, colaboración y cumplimiento expresamente previstas en esta carta."]],
+      ["Legislación y jurisdicción.", ["Para la interpretación y cumplimiento de esta carta, las partes se someten a las leyes federales de los Estados Unidos Mexicanos y a la jurisdicción de los tribunales competentes de ", P("jurisdiccion", "CIUDAD Y ESTADO"), ", renunciando a cualquier otro fuero que pudiera corresponderles."]]
+    ],
+    cierre: "Leída la presente carta y enteradas las partes de su contenido y alcance, la suscriben en dos tantos de igual contenido.",
+    anexo: [["Domicilio del centro de carga", "a_domicilio"], ["Número de servicio, RPU o identificador", "a_rpu"], ["Tensión y tarifa aplicable", "a_tarifa"], ["Consumo histórico anual (MWh)", "a_historico"], ["Demanda máxima (MW)", "a_demanda"], ["Volumen anual comprometido (MWh)", "a_volumen"], ["Fecha estimada de inicio de suministro", "a_inicio"], ["Observaciones técnicas", "a_observaciones"]],
+    proveedor: { nombre: "Representada en México por Eco Solar Logist Mx", rfc: "ESL2310027M9", domicilio: "Niebla 406, Colonia Jardines del Moral, León, Guanajuato" }
+  };
+  const val = (vals, k) => { const x = vals[k]; return x === undefined || x === "" ? null : typeof x === "number" ? x.toLocaleString("es-MX") : String(x); };
+
   function cartaHTML(d, firma = {}) {
-    const v = (k, ph) => d[k] !== undefined && d[k] !== "" ? `<strong>${esc(typeof d[k] === "number" ? d[k].toLocaleString("es-MX") : d[k])}</strong>` : `<span class="doc__blank">[${esc(ph)}]</span>`;
-    const fecha = d.fecha ? new Date(d.fecha + "T12:00:00").toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" }) : null;
-    const repr = d.representante || d.cargo ? `<strong>${esc([d.representante, d.cargo].filter(Boolean).join(", "))}</strong>` : '<span class="doc__blank">[NOMBRE Y CARGO]</span>';
-    const vig = d.vigencia ? `<strong>${esc(d.vigencia)}</strong>` : '<span class="doc__blank">[90/120/180] días naturales</span>';
-    const A = [["Domicilio del centro de carga", "a_domicilio"], ["Número de servicio, RPU o identificador", "a_rpu"], ["Tensión y tarifa aplicable", "a_tarifa"], ["Consumo histórico anual (MWh)", "a_historico"], ["Demanda máxima (MW)", "a_demanda"], ["Volumen anual comprometido (MWh)", "a_volumen"], ["Fecha estimada de inicio de suministro", "a_inicio"], ["Observaciones técnicas", "a_observaciones"]];
-    return `<header class="doc__head"><h1>Carta compromiso para la adquisición de energía eléctrica</h1><p>Vigencia comercial propuesta de diez años</p></header>
-      <p class="doc__right">${v("ciudad", "Ciudad")}, ${v("estado", "Estado")}, a ${fecha ? `<strong>${esc(fecha)}</strong>` : '<span class="doc__blank">[día] de [mes] de [año]</span>'}.</p>
-      <p>A quien corresponda:</p>
-      <p>Por medio de la presente, ${v("consumidor", "NOMBRE O RAZÓN SOCIAL DEL CONSUMIDOR")}, con RFC ${v("rfc", "RFC")}, domicilio en ${v("domicilio", "DOMICILIO")}, representada en este acto por ${repr}, en lo sucesivo el “Consumidor”, manifiesta su interés y compromiso para celebrar el instrumento contractual definitivo de suministro y adquisición de energía eléctrica con Kinam Energy, representada en México por Eco Solar Logist Mx, RFC ESL2310027M9, en lo sucesivo el “Proveedor”.</p>
-      <p>El Consumidor se compromete a adquirir la energía eléctrica requerida para los centros de carga descritos en el Anexo A, por un plazo de diez (10) años, contado a partir de la fecha de inicio de suministro que se establezca en el contrato definitivo, sujeto a las siguientes condiciones:</p>
-      <ol class="doc__list">
-        <li><strong>Objeto.</strong> El Proveedor suministrará y el Consumidor adquirirá energía eléctrica bajo la modalidad jurídicamente aplicable, incluidos, en su caso, los atributos ambientales, productos asociados y Certificados de Energías Limpias que se pacten en el contrato definitivo.</li>
-        <li><strong>Volumen comprometido.</strong> El volumen estimado será de ${v("volumen_mwh", "_____")} MWh anuales, con una demanda máxima estimada de ${v("demanda_mw", "_____")} MW, para el o los centros de carga indicados en el Anexo A. El perfil de consumo, las tolerancias, los mecanismos de ajuste y las consecuencias por desviaciones se definirán en el contrato definitivo y sus anexos técnicos.</li>
-        <li><strong>Precio y contraprestación.</strong> Las partes acordarán el precio de la energía, moneda, indexación, cargos regulados, impuestos, garantías, facturación y forma de pago. Esta carta no fija una tarifa definitiva ni sustituye las condiciones que correspondan a las autoridades competentes.</li>
-        <li><strong>Condiciones regulatorias.</strong> La eficacia del suministro estará sujeta a que el Proveedor, sus afiliadas o terceros autorizados mantengan los permisos, autorizaciones y registros exigibles; a la viabilidad de interconexión y acceso a las redes; y al cumplimiento de las disposiciones aplicables.</li>
-        <li><strong>Cumplimiento normativo.</strong> Las partes observarán la Constitución Política de los Estados Unidos Mexicanos, la Ley del Sector Eléctrico, la Ley de Planeación y Transición Energética, la Ley de la Comisión Nacional de Energía, sus reglamentos, disposiciones administrativas, el Código de Red, las reglas del Mercado Eléctrico Mayorista y demás normativa aplicable durante la relación contractual.</li>
-        <li><strong>Autoridades competentes.</strong> Nada de lo previsto en esta carta constituye una autorización, permiso, garantía de despacho, interconexión, transmisión, distribución o suministro otorgada por autoridad alguna. Permanecen a salvo las atribuciones de la Secretaría de Energía, la Comisión Nacional de Energía, el Centro Nacional de Control de Energía, la Comisión Federal de Electricidad y demás autoridades competentes.</li>
-        <li><strong>Información y colaboración.</strong> El Consumidor proporcionará la información técnica, de consumo, titularidad de los centros de carga y documentación razonablemente necesaria. El Proveedor proporcionará evidencia razonable de su capacidad legal, técnica y operativa para la modalidad de suministro propuesta.</li>
-        <li><strong>Confidencialidad.</strong> Las partes mantendrán confidencial la información técnica, comercial, financiera y documental intercambiada con motivo de esta carta, salvo requerimiento legal o de autoridad competente.</li>
-        <li><strong>Vigencia y formalización.</strong> Esta carta tendrá vigencia de ${vig} a partir de su firma. Durante dicho plazo, las partes negociarán y procurarán formalizar el contrato definitivo. Las obligaciones económicas y de suministro nacerán únicamente con la firma de ese contrato, salvo las obligaciones de confidencialidad, colaboración y cumplimiento expresamente previstas en esta carta.</li>
-        <li><strong>Legislación y jurisdicción.</strong> Para la interpretación y cumplimiento de esta carta, las partes se someten a las leyes federales de los Estados Unidos Mexicanos y a la jurisdicción de los tribunales competentes de ${v("jurisdiccion", "CIUDAD Y ESTADO")}, renunciando a cualquier otro fuero que pudiera corresponderles.</li>
-      </ol>
-      <p>Leída la presente carta y enteradas las partes de su contenido y alcance, la suscriben en dos tantos de igual contenido.</p>
+    const vals = cartaValues(d);
+    const T = CARTA_TEXTO;
+    const seg = (parts) => parts.map((x) => typeof x === "string" ? esc(x) : (val(vals, x.k) ? `<strong>${esc(val(vals, x.k))}</strong>` : `<span class="doc__blank">[${esc(x.ph)}]</span>`)).join("");
+    return `<header class="doc__head"><h1>${T.titulo}</h1><p>${T.subtitulo}</p></header>
+      <p class="doc__right">${seg(T.lugar)}</p>
+      <p>${T.saludo}</p>
+      <p>${seg(T.intro)}</p>
+      <p>${seg(T.compromiso)}</p>
+      <ol class="doc__list">${T.clausulas.map(([t, parts]) => `<li><strong>${t}</strong> ${seg(parts)}</li>`).join("")}</ol>
+      <p>${T.cierre}</p>
       <div class="doc__sign">
-        <div><p class="mono">POR EL CONSUMIDOR</p><p>${v("consumidor", "NOMBRE O RAZÓN SOCIAL DEL CONSUMIDOR")}<br>RFC: ${v("rfc", "RFC")}</p>
+        <div><p class="mono">POR EL CONSUMIDOR</p><p>${seg([P("consumidor", "NOMBRE O RAZÓN SOCIAL DEL CONSUMIDOR")])}<br>RFC: ${seg([P("rfc", "RFC")])}</p>
           <p class="doc__line">${firma.por ? `Aceptada electrónicamente por <strong>${esc(firma.por)}</strong>${firma.at ? " el " + esc(new Date(firma.at).toLocaleString("es-MX", { dateStyle: "long", timeStyle: "short" })) : ""}` : "&nbsp;"}</p>
-          <p class="note">Nombre, cargo y firma</p><p>Facultades: ${v("facultades", "__________")}</p></div>
-        <div><p class="mono">POR KINAM ENERGY</p><p>Representada en México por Eco Solar Logist Mx<br>RFC: ESL2310027M9</p>
+          <p class="note">Nombre, cargo y firma</p><p>Facultades: ${seg([P("facultades", "__________")])}</p></div>
+        <div><p class="mono">POR KINAM ENERGY</p><p>${T.proveedor.nombre}<br>RFC: ${T.proveedor.rfc}</p>
           <p class="doc__line">&nbsp;</p><p class="note">Nombre, cargo y firma</p><p>Facultades: __________</p></div>
       </div>
       <h2 class="doc__annex">Anexo A · Centros de carga y consumo estimado</h2>
-      <table class="table doc__table"><tbody>${A.map(([l, k]) => `<tr><th>${esc(l)}</th><td>${v(k, "_____")}</td></tr>`).join("")}</tbody></table>
-      <p class="doc__foot">Niebla 406, Colonia Jardines del Moral, León, Guanajuato</p>`;
-  }
-
-  // Abre una ventana lista para imprimir o guardar como PDF.
-  function print(title, html) {
-    const w = window.open("", "_blank");
-    if (!w) return alert("Permite las ventanas emergentes para imprimir.");
-    w.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>${esc(title)}</title><link rel="stylesheet" href="/assets/css/doc.css"></head><body class="doc doc--print">${html}<script>window.onload=()=>setTimeout(()=>print(),300)<\/script></body></html>`);
-    w.document.close();
+      <table class="table doc__table"><tbody>${T.anexo.map(([l, k]) => `<tr><th>${esc(l)}</th><td>${seg([P(k, "_____")])}</td></tr>`).join("")}</tbody></table>
+      <p class="doc__foot">${T.proveedor.domicilio}</p>`;
   }
 
   const ESTADOS = { borrador: "Borrador", enviado: "Enviado", revision: "En revisión", observado: "Con observaciones", aprobado: "Aprobado" };
   const ETAPAS = { evaluacion: "Evaluación", requisitos: "Requisitos de instalación", carta: "Carta compromiso", contrato: "Contrato", instalacion: "Instalación", operacion: "Operación", cancelado: "Cancelado" };
 
-  window.KinamFormatos = { REQUISITOS, CARTA, ESTADOS, ETAPAS, render, collect, progress, show, requisitosHTML, cartaHTML, print, fields };
+  window.KinamFormatos = { REQUISITOS, CARTA, CARTA_TEXTO, ESTADOS, ETAPAS, render, collect, progress, show, requisitosHTML, cartaHTML, cartaValues, fields };
 })();
