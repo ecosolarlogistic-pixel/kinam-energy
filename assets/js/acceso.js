@@ -2,14 +2,29 @@
 (function () {
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-  const { client, ready, AREAS, message } = window.KinamAuth;
+  const { client, ready, AREAS, message, staffRole } = window.KinamAuth;
 
   $("#year").textContent = new Date().getFullYear();
 
   const params = new URLSearchParams(location.search);
-  const area = AREAS[params.get("area")] ? params.get("area") : "evaluacion";
-  const target = "/area/" + AREAS[area].hash;
-  if (params.get("area")) $("#auth-title").textContent = "Entra a " + AREAS[area].label;
+  const chosen = AREAS[params.get("area")] ? params.get("area") : null;
+  const area = chosen || "evaluacion";
+  const target = AREAS[area].path;
+  if (chosen) $("#auth-title").textContent = "Entra a " + AREAS[area].label;
+  if (area === "interno") {
+    $("#auth-title").textContent = "Acceso interno";
+    $("#tab-signup").hidden = true;
+    $(".auth__list").hidden = true;
+    $("#auth-can").hidden = true;
+    $("#staff-note").hidden = false;
+    $("#panel-login button[type=submit]").textContent = "Entrar a Interno";
+  }
+
+  // Sin área elegida (por ejemplo al abrir la app instalada), el equipo va a Interno.
+  async function go(user) {
+    if (!chosen && user && (await staffRole(user.id))) return location.replace(AREAS.interno.path);
+    location.replace(target);
+  }
 
   const panels = { login: $("#panel-login"), signup: $("#panel-signup"), forgot: $("#panel-forgot"), reset: $("#panel-reset") };
   const tabs = $(".auth__tabs");
@@ -53,6 +68,7 @@
     b.textContent = hidden ? "Ocultar" : "Ver";
   }));
   if (params.get("modo") === "registro") show("signup");
+  if (params.get("modo") === "recuperar") show("forgot");
 
   if (!ready) {
     $("#auth-offline").hidden = false;
@@ -66,7 +82,7 @@
     if (event === "PASSWORD_RECOVERY") show("reset");
   });
   client.auth.getSession().then(({ data }) => {
-    if (data.session && !/type=recovery/.test(location.hash)) location.replace(target);
+    if (data.session && !/type=recovery/.test(location.hash)) go(data.session.user);
   });
 
   function invalid(form) {
@@ -85,10 +101,10 @@
     const f = e.currentTarget;
     if (invalid(f)) return say(f, "Escribe tu correo y tu contraseña.");
     busy(f, true);
-    const { error } = await client.auth.signInWithPassword({ email: f.email.value.trim().toLowerCase(), password: f.password.value });
+    const { data, error } = await client.auth.signInWithPassword({ email: f.email.value.trim().toLowerCase(), password: f.password.value });
     busy(f, false);
     if (error) return say(f, message(error));
-    location.replace(target);
+    go(data.user);
   });
 
   panels.signup.addEventListener("submit", async (e) => {
@@ -100,7 +116,7 @@
       email: f.email.value.trim().toLowerCase(),
       password: f.password.value,
       options: {
-        emailRedirectTo: location.origin + target,
+        emailRedirectTo: "https://www.kinamenergy.com" + AREAS.evaluacion.path,
         data: { full_name: f.full_name.value.trim(), company: f.company.value.trim(), phone: f.phone.value.trim() }
       }
     });
@@ -116,7 +132,7 @@
     const f = e.currentTarget;
     if (invalid(f)) return say(f, "Escribe un correo válido.");
     busy(f, true);
-    const { error } = await client.auth.resetPasswordForEmail(f.email.value.trim().toLowerCase(), { redirectTo: location.origin + "/acceso.html" });
+    const { error } = await client.auth.resetPasswordForEmail(f.email.value.trim().toLowerCase(), { redirectTo: "https://www.kinamenergy.com/acceso.html" });
     busy(f, false);
     if (error) return say(f, message(error));
     say(f, "Si el correo está registrado, recibirás un enlace en unos minutos.", true);
@@ -127,9 +143,9 @@
     const f = e.currentTarget;
     if (invalid(f)) return say(f, "La contraseña necesita al menos 8 caracteres.");
     busy(f, true);
-    const { error } = await client.auth.updateUser({ password: f.password.value });
+    const { data, error } = await client.auth.updateUser({ password: f.password.value });
     busy(f, false);
     if (error) return say(f, message(error));
-    location.replace(target);
+    go(data.user);
   });
 })();

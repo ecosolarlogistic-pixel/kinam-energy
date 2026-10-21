@@ -6,11 +6,18 @@
     ? window.supabase.createClient(cfg.url, cfg.key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } })
     : null;
 
-  // Áreas protegidas: el nombre de la segunda opción es provisional.
+  // Áreas protegidas: clientes en /area/ y el equipo KINAM en /interno/.
   const AREAS = {
-    evaluacion: { label: "Evaluación técnica", hash: "#evaluacion" },
-    portal: { label: "Portal de clientes", hash: "#portal" }
+    evaluacion: { label: "Evaluación técnica", path: "/area/#evaluacion" },
+    interno: { label: "Interno", path: "/interno/" }
   };
+
+  // Rol de la cuenta en el equipo KINAM ("admin", "equipo") o null si es cliente.
+  async function staffRole(userId) {
+    if (!client) return null;
+    const { data } = await client.from("staff").select("role").eq("user_id", userId).maybeSingle();
+    return data ? data.role || "equipo" : null;
+  }
 
   // Traduce los errores más comunes de Supabase a mensajes claros.
   function message(err) {
@@ -24,5 +31,5 @@
     return m || "Algo salió mal. Intenta de nuevo.";
   }
 
-  window.KinamAuth = { client, ready, AREAS, message };
+  window.KinamAuth = { client, ready, AREAS, message, staffRole };
 })();

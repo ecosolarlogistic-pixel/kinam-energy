@@ -2,13 +2,19 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Acceso | KINAM Energy</title>
-  <meta name="description" content="Crea tu cuenta o inicia sesión para entrar al área de trabajo de KINAM Energy: evaluación técnica y portal de clientes.">
+  <meta name="description" content="Crea tu cuenta o inicia sesión para entrar al área de trabajo de KINAM Energy.">
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#07172A">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="KINAM">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
@@ -23,7 +29,10 @@
       <a class="nav__brand" href="/" aria-label="KINAM Energy, inicio">
         <img src="/assets/img/logo-kinam.webp" alt="KINAM Energy, Energía sin límites" width="135" height="60">
       </a>
-      <a class="btn btn--ghost btn--sm" href="/">Volver al sitio</a>
+      <div class="app__user">
+        <button class="btn btn--ghost btn--sm" type="button" data-install hidden>Instalar app</button>
+        <a class="btn btn--ghost btn--sm" href="/">Volver al sitio</a>
+      </div>
     </div>
   </header>
 
@@ -31,11 +40,12 @@
     <section class="auth__intro">
       <p class="mono">ÁREA DE TRABAJO</p>
       <h1 id="auth-title">Entra a tu área de trabajo</h1>
-      <p>Con tu cuenta KINAM puedes:</p>
+      <p id="auth-can">Con tu cuenta KINAM puedes:</p>
       <ul class="auth__list">
         <li><strong>Evaluación técnica.</strong> Registra los datos de tu sitio y tu demanda energética para que el equipo técnico dimensione tu solución.</li>
-        <li><strong>Portal de clientes.</strong> Consulta el estado de tus evaluaciones, propuestas y documentos.</li>
+        <li><strong>Mis evaluaciones.</strong> Consulta el estado de tus evaluaciones y los comentarios del equipo técnico.</li>
       </ul>
+      <p class="auth__staff" id="staff-note" hidden>Acceso para el equipo KINAM. Las cuentas internas las habilita Dirección.</p>
       <p class="note">Tus datos se guardan en una base protegida y solo tú y el equipo de KINAM pueden verlos.</p>
     </section>
 
@@ -129,5 +139,6 @@
   <script src="/assets/js/config.js" defer></script>
   <script src="/assets/js/auth.js" defer></script>
   <script src="/assets/js/acceso.js" defer></script>
+  <script src="/assets/js/pwa.js" defer></script>
 </body>
 </html>

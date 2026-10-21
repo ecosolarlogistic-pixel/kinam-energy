@@ -2,11 +2,16 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>KINAM Energy | Digital Power: energía autónoma para operaciones críticas</title>
   <meta name="description" content="KINAM Digital Power: autogeneración cinética empaquetada en contenedor. Energía continua, in situ y modular para centros de datos, industria, telecomunicaciones y comunidades remotas, bajo el modelo Energía como Servicio.">
   <link rel="canonical" href="https://www.kinamenergy.com/">
   <meta name="theme-color" content="#07172A">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="KINAM">
   <script>document.documentElement.classList.add("js")</script>
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
@@ -76,7 +81,7 @@
         <a href="#escalabilidad">Escalabilidad</a>
         <a href="#eaas">Energía como Servicio</a>
         <a class="nav__private" href="/acceso.html?area=evaluacion">Evaluación técnica</a>
-        <a class="nav__private" href="/acceso.html?area=portal">Portal de clientes</a>
+        <a class="nav__private" href="/interno/">Interno</a>
         <a class="btn btn--primary btn--sm" href="#contacto">Agendar asesoría</a>
       </nav>
     </div>
@@ -456,13 +461,15 @@
     <div class="wrap footer__inner">
       <img src="/assets/img/logo-kinam.webp" alt="KINAM Energy" width="180" height="80" loading="lazy">
       <nav class="footer__nav" aria-label="Pie de página">
-        <a href="#solucion">Solución</a><a href="#tecnologia">Tecnología</a><a href="#eaas">EaaS</a><a href="#contacto">Contacto</a><a href="/acceso.html">Acceso a clientes</a>
+        <a href="#solucion">Solución</a><a href="#tecnologia">Tecnología</a><a href="#eaas">EaaS</a><a href="#contacto">Contacto</a><a href="/acceso.html">Acceso a clientes</a><a href="/interno/">Acceso interno</a>
       </nav>
       <p class="note">Las cifras de capacidad, eficiencia, respaldo, rango térmico y escalamiento son referenciales y se validan con el equipo técnico de KINAM en cada proyecto.</p>
+      <button class="btn btn--ghost btn--sm" type="button" data-install hidden>Instalar la app de KINAM</button>
       <p>&copy; <span id="year">2026</span> KINAM Energy. Energía sin límites.</p>
     </div>
   </footer>
 
   <script src="/assets/js/main.js" defer></script>
+  <script src="/assets/js/pwa.js" defer></script>
 </body>
 </html>
