@@ -73,7 +73,7 @@ create policy "bitacora: registrar" on public.access_log for insert to authentic
 drop policy if exists "bitacora: ver" on public.access_log;
 create policy "bitacora: ver" on public.access_log for select to authenticated using (public.is_admin());
 
--- Primer administrador: cambia el correo si usaste otro al registrarte.
+-- Administradores (Dirección). Cada correo debe estar registrado en el sitio.
 insert into public.staff (user_id, role)
-select id, 'admin' from auth.users where email = 'admin@kinamenergy.com'
+select id, 'admin' from auth.users where email in ('admin@kinamenergy.com', 'ecosolarlogistic@gmail.com')
 on conflict (user_id) do update set role = 'admin';
