@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Área de trabajo | KINAM Energy</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#07172A">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/assets/css/portal.css">
+</head>
+<body class="app is-loading">
+  <header class="nav">
+    <div class="wrap wrap--wide nav__inner">
+      <a class="nav__brand" href="/" aria-label="KINAM Energy, inicio">
+        <img src="/assets/img/logo-kinam.webp" alt="KINAM Energy" width="135" height="60">
+      </a>
+      <div class="app__user">
+        <span id="user-name" class="app__who"></span>
+        <button class="btn btn--ghost btn--sm" id="logout" type="button">Salir</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap wrap--wide app__layout">
+    <nav class="app__side" aria-label="Área de trabajo">
+      <a href="#inicio" data-view="inicio">Inicio</a>
+      <a href="#evaluacion" data-view="evaluacion">Evaluación técnica</a>
+      <a href="#portal" data-view="portal">Portal de clientes</a>
+      <a href="#cuenta" data-view="cuenta">Mi cuenta</a>
+    </nav>
+
+    <main class="app__main" id="main">
+      <p class="app__loading" role="status">Cargando tu área de trabajo…</p>
+
+      <!-- Inicio -->
+      <section class="view" id="view-inicio" hidden>
+        <p class="mono">ÁREA DE TRABAJO</p>
+        <h1>Hola, <span data-first-name>bienvenido</span></h1>
+        <p class="lead">Desde aquí registras tus evaluaciones técnicas y das seguimiento a tus proyectos con KINAM.</p>
+        <div class="tiles">
+          <a class="tile" href="#evaluacion">
+            <span class="mono">01</span>
+            <h2>Evaluación técnica</h2>
+            <p>Describe tu sitio, tu demanda y tu fuente de energía actual. El equipo técnico la revisa y prepara tu propuesta.</p>
+          </a>
+          <a class="tile" href="#portal">
+            <span class="mono">02</span>
+            <h2>Portal de clientes</h2>
+            <p>Consulta el estado de tus evaluaciones y las propuestas que te comparta KINAM.</p>
+          </a>
+        </div>
+        <div class="stats" aria-live="polite">
+          <div><strong id="stat-total">0</strong><span>Evaluaciones enviadas</span></div>
+          <div><strong id="stat-review">0</strong><span>En revisión</span></div>
+          <div><strong id="stat-proposal">0</strong><span>Con propuesta</span></div>
+        </div>
+      </section>
+
+      <!-- Evaluación técnica -->
+      <section class="view" id="view-evaluacion" hidden>
+        <p class="mono">EVALUACIÓN TÉCNICA</p>
+        <h1>Nueva evaluación técnica</h1>
+        <p>Con estos datos dimensionamos el módulo KINAM Digital Power para tu operación. Si no conoces algún dato, déjalo vacío y lo vemos en la llamada.</p>
+
+        <form class="form evalform" id="eval-form" novalidate>
+          <fieldset>
+            <legend>Proyecto</legend>
+            <div class="form__grid">
+              <div class="full"><label for="ev-name">Nombre del proyecto o sitio</label><input id="ev-name" name="project_name" required placeholder="Ej. Centro de datos Querétaro"></div>
+              <div>
+                <label for="ev-industry">Industria</label>
+                <select id="ev-industry" name="industry" required>
+                  <option value="">Selecciona…</option>
+                  <option>Centro de datos</option><option>Industria / manufactura</option><option>Telecomunicaciones</option>
+                  <option>Comunidad remota</option><option>Comercio / servicios</option><option>Agroindustria</option><option>Otra</option>
+                </select>
+              </div>
+              <div><label for="ev-location">Ciudad y estado</label><input id="ev-location" name="location" required placeholder="Ej. Querétaro, Qro."></div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Demanda energética</legend>
+            <div class="form__grid">
+              <div><label for="ev-peak">Demanda máxima (kW)</label><input id="ev-peak" name="peak_kw" type="number" min="0" step="any" inputmode="decimal"></div>
+              <div><label for="ev-kwh">Consumo mensual (kWh)</label><input id="ev-kwh" name="monthly_kwh" type="number" min="0" step="any" inputmode="decimal"></div>
+              <div><label for="ev-hours">Horas de operación al día</label><input id="ev-hours" name="hours_per_day" type="number" min="0" max="24" step="any" inputmode="decimal"></div>
+              <div><label for="ev-bill">Gasto mensual en energía (MXN)</label><input id="ev-bill" name="monthly_cost_mxn" type="number" min="0" step="any" inputmode="decimal"></div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Conexión eléctrica</legend>
+            <div class="form__grid">
+              <div>
+                <label for="ev-phases">Fases</label>
+                <select id="ev-phases" name="phases"><option value="">No sé</option><option>Monofásica</option><option>Bifásica</option><option>Trifásica</option></select>
+              </div>
+              <div><label for="ev-voltage">Tensión (V)</label><input id="ev-voltage" name="voltage" placeholder="Ej. 220/127, 480, 13.2 kV"></div>
+              <div>
+                <label for="ev-freq">Frecuencia</label>
+                <select id="ev-freq" name="frequency_hz"><option value="60">60 Hz</option><option value="50">50 Hz</option></select>
+              </div>
+              <div>
+                <label for="ev-source">Fuente actual</label>
+                <select id="ev-source" name="current_source">
+                  <option value="">Selecciona…</option><option>Red eléctrica (CFE)</option><option>Diésel / gas</option><option>Solar</option><option>Mixta</option><option>Sin suministro</option>
+                </select>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Operación y sitio</legend>
+            <div class="form__grid">
+              <div><label for="ev-backup">Respaldo requerido (horas)</label><input id="ev-backup" name="backup_hours" type="number" min="0" step="any" inputmode="decimal"></div>
+              <div>
+                <label for="ev-critical">¿Qué tan crítica es la continuidad?</label>
+                <select id="ev-critical" name="criticality"><option value="">Selecciona…</option><option>Crítica (no puede detenerse)</option><option>Alta</option><option>Media</option><option>Baja</option></select>
+              </div>
+              <div>
+                <label for="ev-space">Espacio para contenedor</label>
+                <select id="ev-space" name="container_space"><option value="">No sé</option><option>Sí, hay espacio</option><option>Limitado</option><option>No hay espacio</option></select>
+              </div>
+              <div>
+                <label for="ev-model">Modelo de interés</label>
+                <select id="ev-model" name="business_model"><option value="">Por definir</option><option>Energía como Servicio (pago por kWh)</option><option>Compra del equipo</option></select>
+              </div>
+              <div class="full"><label for="ev-notes">Comentarios</label><textarea id="ev-notes" name="notes" rows="4" placeholder="Cargas críticas, fechas, cortes frecuentes, planes de crecimiento…"></textarea></div>
+            </div>
+          </fieldset>
+
+          <p class="auth__msg" role="alert" hidden></p>
+          <button class="btn btn--primary" type="submit">Enviar evaluación</button>
+        </form>
+      </section>
+
+      <!-- Portal de clientes (nombre provisional) -->
+      <section class="view" id="view-portal" hidden>
+        <p class="mono">PORTAL DE CLIENTES</p>
+        <h1>Mis evaluaciones y proyectos</h1>
+        <p>Aquí ves el avance de cada evaluación. El equipo de KINAM actualiza el estado y te contacta cuando tu propuesta está lista.</p>
+        <div id="eval-list" class="evlist" aria-live="polite"></div>
+        <p class="note" id="eval-empty" hidden>Todavía no tienes evaluaciones. <a href="#evaluacion">Crea la primera</a>.</p>
+      </section>
+
+      <!-- Mi cuenta -->
+      <section class="view" id="view-cuenta" hidden>
+        <p class="mono">MI CUENTA</p>
+        <h1>Mis datos</h1>
+        <form class="form" id="profile-form" novalidate>
+          <div class="form__grid">
+            <div class="full"><label for="pf-email">Correo</label><input id="pf-email" type="email" disabled></div>
+            <div class="full"><label for="pf-name">Nombre completo</label><input id="pf-name" name="full_name" autocomplete="name" required></div>
+            <div><label for="pf-company">Empresa</label><input id="pf-company" name="company" autocomplete="organization"></div>
+            <div><label for="pf-phone">Teléfono / WhatsApp</label><input id="pf-phone" name="phone" type="tel" autocomplete="tel"></div>
+          </div>
+          <p class="auth__msg" role="alert" hidden></p>
+          <button class="btn btn--primary" type="submit">Guardar cambios</button>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" defer></script>
+  <script src="/assets/js/config.js" defer></script>
+  <script src="/assets/js/auth.js" defer></script>
+  <script src="/assets/js/area.js" defer></script>
+</body>
+</html>
