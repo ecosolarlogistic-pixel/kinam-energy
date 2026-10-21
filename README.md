@@ -13,10 +13,13 @@ CNAME                 Dominio personalizado para GitHub Pages
 assets/css/styles.css Sistema visual
 assets/js/main.js     Menú, pestañas, calculadora, formulario
 acceso.html           Registro, inicio de sesión y recuperación de contraseña
-area/index.html       Área de trabajo (Evaluación técnica, Portal de clientes, Mi cuenta)
+area/index.html       Área de clientes (Evaluación técnica, Mis evaluaciones, Mi cuenta)
+interno/index.html    Panel Interno del equipo (Resumen, Evaluaciones, Clientes, Equipo, Bitácora)
+manifest.webmanifest, sw.js, assets/js/pwa.js, assets/icons/  App instalable (PWA)
 assets/js/config.js   URL y llave pública de Supabase (vacío = acceso desactivado)
 assets/js/auth.js, acceso.js, area.js, assets/css/portal.css
 supabase/schema.sql   Tablas y reglas de seguridad de la base de datos
+supabase/02-interno.sql  Roles del equipo, bitácora y gestión del equipo (correr después de schema.sql)
 assets/img/           Logo, banner e imágenes de la presentación
 ```
 
@@ -26,10 +29,11 @@ Cualquier `git push` a la rama `main` se publica automáticamente en GitHub Page
 
 ## Acceso con cuenta (Supabase)
 
-1. Ejecutar `supabase/schema.sql` en el proyecto de Supabase.
+1. Ejecutar `supabase/schema.sql` y luego `supabase/02-interno.sql` en el proyecto de Supabase.
 2. En Authentication → URL Configuration: Site URL `https://www.kinamenergy.com` y Redirect URLs `https://www.kinamenergy.com/**`.
 3. Poner la URL y la llave *publishable* en `assets/js/config.js`.
-4. Para que alguien del equipo vea todas las evaluaciones y cambie su estado, agregarlo a la tabla `staff` (ver el final de `schema.sql`).
+4. El primer administrador (admin@kinamenergy.com) se habilita en `02-interno.sql`. Después, Dirección da acceso al resto del equipo desde Interno → Equipo.
+5. Al cambiar diseño o scripts, sube `VERSION` en `sw.js` para que la app instalada se actualice.
 
 ## Pendientes antes de lanzar
 

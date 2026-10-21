@@ -2,12 +2,18 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Área de trabajo | KINAM Energy</title>
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#07172A">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="KINAM">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
@@ -22,6 +28,8 @@
       </a>
       <div class="app__user">
         <span id="user-name" class="app__who"></span>
+        <a class="btn btn--ghost btn--sm" id="to-interno" href="/interno/" hidden>Interno</a>
+        <button class="btn btn--ghost btn--sm" type="button" data-install hidden>Instalar app</button>
         <button class="btn btn--ghost btn--sm" id="logout" type="button">Salir</button>
       </div>
     </div>
@@ -31,7 +39,7 @@
     <nav class="app__side" aria-label="Área de trabajo">
       <a href="#inicio" data-view="inicio">Inicio</a>
       <a href="#evaluacion" data-view="evaluacion">Evaluación técnica</a>
-      <a href="#portal" data-view="portal">Portal de clientes</a>
+      <a href="#mis-evaluaciones" data-view="mis-evaluaciones">Mis evaluaciones</a>
       <a href="#cuenta" data-view="cuenta">Mi cuenta</a>
     </nav>
 
@@ -49,10 +57,10 @@
             <h2>Evaluación técnica</h2>
             <p>Describe tu sitio, tu demanda y tu fuente de energía actual. El equipo técnico la revisa y prepara tu propuesta.</p>
           </a>
-          <a class="tile" href="#portal">
+          <a class="tile" href="#mis-evaluaciones">
             <span class="mono">02</span>
-            <h2>Portal de clientes</h2>
-            <p>Consulta el estado de tus evaluaciones y las propuestas que te comparta KINAM.</p>
+            <h2>Mis evaluaciones</h2>
+            <p>Consulta el estado de tus evaluaciones y los comentarios del equipo técnico de KINAM.</p>
           </a>
         </div>
         <div class="stats" aria-live="polite">
@@ -141,9 +149,9 @@
         </form>
       </section>
 
-      <!-- Portal de clientes (nombre provisional) -->
-      <section class="view" id="view-portal" hidden>
-        <p class="mono">PORTAL DE CLIENTES</p>
+      <!-- Mis evaluaciones -->
+      <section class="view" id="view-mis-evaluaciones" hidden>
+        <p class="mono">MIS EVALUACIONES</p>
         <h1>Mis evaluaciones y proyectos</h1>
         <p>Aquí ves el avance de cada evaluación. El equipo de KINAM actualiza el estado y te contacta cuando tu propuesta está lista.</p>
         <div id="eval-list" class="evlist" aria-live="polite"></div>
@@ -172,5 +180,6 @@
   <script src="/assets/js/config.js" defer></script>
   <script src="/assets/js/auth.js" defer></script>
   <script src="/assets/js/area.js" defer></script>
+  <script src="/assets/js/pwa.js" defer></script>
 </body>
 </html>

@@ -2,8 +2,8 @@
 (function () {
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-  const { client, ready, message } = window.KinamAuth;
-  const VIEWS = ["inicio", "evaluacion", "portal", "cuenta"];
+  const { client, ready, message, staffRole } = window.KinamAuth;
+  const VIEWS = ["inicio", "evaluacion", "mis-evaluaciones", "cuenta"];
   const STATUS = { recibida: "Recibida", revision: "En revisión", propuesta: "Con propuesta", cerrada: "Cerrada" };
   let user = null;
 
@@ -14,7 +14,7 @@
     const view = VIEWS.includes(v) ? v : "inicio";
     $$(".view").forEach((s) => { s.hidden = s.id !== "view-" + view; });
     $$(".app__side a").forEach((a) => a.setAttribute("aria-current", a.dataset.view === view ? "page" : "false"));
-    if (view === "portal" || view === "inicio") loadEvaluations();
+    if (view === "mis-evaluaciones" || view === "inicio") loadEvaluations();
     window.scrollTo(0, 0);
   }
 
@@ -85,7 +85,7 @@
     if (error) return say(f, "No se pudo enviar: " + message(error));
     f.reset();
     say(f, "¡Evaluación enviada! El equipo técnico de KINAM la revisará y te contactará.", true);
-    setTimeout(() => { location.hash = "#portal"; }, 1600);
+    setTimeout(() => { location.hash = "#mis-evaluaciones"; }, 1600);
   });
 
   $("#profile-form").addEventListener("submit", async (e) => {
@@ -107,13 +107,13 @@
 
   client.auth.getSession().then(async ({ data }) => {
     if (!data.session) {
-      const area = location.hash === "#portal" ? "portal" : "evaluacion";
-      return location.replace("/acceso.html?area=" + area);
+      return location.replace("/acceso.html?area=evaluacion");
     }
     user = data.session.user;
     document.body.classList.remove("is-loading");
     window.addEventListener("hashchange", route);
     await loadProfile();
     route();
+    if (await staffRole(user.id)) $("#to-interno").hidden = false;
   });
 })();
