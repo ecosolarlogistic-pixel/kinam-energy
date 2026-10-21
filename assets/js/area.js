@@ -4,6 +4,7 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const { client, ready, message, staffRole } = window.KinamAuth;
   const F = window.KinamFormatos;
+  const R = window.KinamReporte;
   const VIEWS = ["inicio", "gestion", "evaluacion", "requisitos", "carta", "cuenta"];
   const STATUS = { recibida: "Recibida", revision: "En revisión", propuesta: "Con propuesta", cerrada: "Cerrada" };
   const FORMS = {
@@ -229,14 +230,25 @@
     $("[data-project]", view).addEventListener("change", (e) => { selected[tipo] = e.target.value; openForm(tipo); });
     $("[data-save]", form).addEventListener("click", () => save(tipo, false));
     form.addEventListener("submit", (e) => { e.preventDefault(); save(tipo, true); });
-    $("[data-print]", form).addEventListener("click", () => {
+    // Reporte PDF: ver o enviar por WhatsApp / correo
+    const report = () => {
       const row = formato(selected[tipo], tipo);
-      const data = editable(row) ? F.collect(form, cfg.schema) : row.data;
       const p = proyectos.find((x) => x.id === selected[tipo]) || {};
-      F.print(cfg.name + " · " + (p.nombre || ""), tipo === "carta"
-        ? F.cartaHTML(data, { por: row?.firmado_at ? row.firmado_por : null, at: row?.firmado_at })
-        : F.requisitosHTML(data, { proyecto: p.nombre }));
-    });
+      const data = editable(row) ? F.collect(form, cfg.schema) : row.data;
+      const firma = tipo === "carta" && row?.firmado_at ? { por: row.firmado_por, at: row.firmado_at } : null;
+      return [tipo, data, { id: row?.id, proyecto_id: p.id, proyecto: p.nombre, cliente: cliente?.razon_social, estado: row ? F.ESTADOS[row.status] : "Borrador", enviado: row?.submitted_at, firma }];
+    };
+    const busy = async (btn, label, job) => {
+      const txt = btn.textContent;
+      btn.disabled = true; btn.textContent = label;
+      try { await job(); } catch (err) { say(form, "No se pudo generar el PDF: " + message(err)); }
+      finally { btn.disabled = false; btn.textContent = txt; }
+    };
+    $("[data-pdf]", form).addEventListener("click", (e) => busy(e.currentTarget, "Generando…", () => R.view(...report())));
+    $$("[data-send]", form).forEach((b) => b.addEventListener("click", (e) => busy(e.currentTarget, "Preparando…", async () => {
+      const r = await R.send(b.dataset.send, ...report(), { client, nombre: "", phone: "", email: "" });
+      if (r.link) say(form, "Listo: se abrió " + (b.dataset.send === "whatsapp" ? "WhatsApp" : "tu correo") + " con la liga segura al PDF (válida 30 días).", true);
+    })));
     form.addEventListener("input", () => {
       $("[data-progress]", view).textContent = F.progress(cfg.schema, F.collect(form, cfg.schema)) + "% completado";
       if (tipo === "carta") preview();
