@@ -104,7 +104,11 @@
           <button class="btn btn--primary" type="submit">Guardar datos de la empresa</button>
         </form>
 
-        <h2 class="app__h2">2. Mis proyectos</h2>
+        <h2 class="app__h2">2. Responsables de la empresa</h2>
+        <p class="note">Personas que pueden ser responsables del proyecto, técnicas o eléctricas. Aparecen como opciones al llenar tus formatos.</p>
+        <div id="contactos-box" aria-live="polite"></div>
+
+        <h2 class="app__h2">3. Mis proyectos</h2>
         <form class="form toolbar toolbar--form" id="proyecto-form" novalidate>
           <div><label for="pr-nombre">Nombre del proyecto o sitio</label><input id="pr-nombre" name="nombre" required placeholder="Ej. Planta Querétaro"></div>
           <div><label for="pr-ubic">Ubicación</label><input id="pr-ubic" name="ubicacion" placeholder="Ciudad, estado"></div>
@@ -113,7 +117,7 @@
         </form>
         <div id="project-list" class="evlist" aria-live="polite"></div>
 
-        <h2 class="app__h2">3. Evaluaciones técnicas</h2>
+        <h2 class="app__h2">4. Evaluaciones técnicas</h2>
         <p><a class="btn btn--ghost btn--sm" href="#evaluacion">Nueva evaluación técnica</a></p>
         <div id="eval-list" class="evlist" aria-live="polite"></div>
         <p class="note" id="eval-empty" hidden>Todavía no tienes evaluaciones. <a href="#evaluacion">Crea la primera</a>.</p>
@@ -146,10 +150,10 @@
           <fieldset>
             <legend>Demanda energética</legend>
             <div class="form__grid">
-              <div><label for="ev-peak">Demanda máxima (kW)</label><input id="ev-peak" name="peak_kw" type="number" min="0" step="any" inputmode="decimal"></div>
-              <div><label for="ev-kwh">Consumo mensual (kWh)</label><input id="ev-kwh" name="monthly_kwh" type="number" min="0" step="any" inputmode="decimal"></div>
-              <div><label for="ev-hours">Horas de operación al día</label><input id="ev-hours" name="hours_per_day" type="number" min="0" max="24" step="any" inputmode="decimal"></div>
-              <div><label for="ev-bill">Gasto mensual en energía (MXN)</label><input id="ev-bill" name="monthly_cost_mxn" type="number" min="0" step="any" inputmode="decimal"></div>
+              <div><label for="ev-peak">Demanda máxima (kW)</label><input id="ev-peak" name="peak_kw" type="text" inputmode="decimal" autocomplete="off" data-num></div>
+              <div><label for="ev-kwh">Consumo mensual (kWh)</label><input id="ev-kwh" name="monthly_kwh" type="text" inputmode="decimal" autocomplete="off" data-num></div>
+              <div><label for="ev-hours">Horas de operación al día</label><input id="ev-hours" name="hours_per_day" type="text" inputmode="decimal" autocomplete="off" data-num></div>
+              <div><label for="ev-bill">Gasto mensual en energía (MXN)</label><input id="ev-bill" name="monthly_cost_mxn" type="text" inputmode="decimal" autocomplete="off" data-num></div>
             </div>
           </fieldset>
 
@@ -177,7 +181,7 @@
           <fieldset>
             <legend>Operación y sitio</legend>
             <div class="form__grid">
-              <div><label for="ev-backup">Respaldo requerido (horas)</label><input id="ev-backup" name="backup_hours" type="number" min="0" step="any" inputmode="decimal"></div>
+              <div><label for="ev-backup">Respaldo requerido (horas)</label><input id="ev-backup" name="backup_hours" type="text" inputmode="decimal" autocomplete="off" data-num></div>
               <div>
                 <label for="ev-critical">¿Qué tan crítica es la continuidad?</label>
                 <select id="ev-critical" name="criticality"><option value="">Selecciona…</option><option>Crítica (no puede detenerse)</option><option>Alta</option><option>Media</option><option>Baja</option></select>
