@@ -23,7 +23,7 @@
   };
   const FNAME = { requisitos: "Requisitos de instalación", carta: "Carta compromiso" };
   let user = null, role = null, evals = [], clients = new Map(), current = null;
-  let empresas = [], proyectos = [], formatos = [], seguimiento = [], staff = [], team = [], cliente = null, openFm = null;
+  let empresas = [], proyectos = [], formatos = [], seguimiento = [], staff = [], team = [], contactos = [], cliente = null, openFm = null, director = false;
 
   if (!ready) return location.replace("/acceso.html?area=interno");
 
@@ -71,14 +71,15 @@
 
   // Datos
   async function loadData() {
-    const [ev, pf, cl, pr, fm, sg, st] = await Promise.all([
+    const [ev, pf, cl, pr, fm, sg, st, ct] = await Promise.all([
       client.from("evaluaciones").select("*").order("created_at", { ascending: false }),
       client.from("profiles").select("id, full_name, company, phone, email, created_at"),
       client.from("clientes").select("*").order("created_at", { ascending: false }),
       client.from("proyectos").select("*").order("created_at", { ascending: false }),
       client.from("formatos").select("*").order("updated_at", { ascending: false }),
       client.from("seguimiento").select("*").order("at", { ascending: false }).limit(1000),
-      client.from("staff").select("user_id, role, area, supervisor_id")
+      client.from("staff").select("user_id, role, area, supervisor_id"),
+      client.from("contactos").select("*").eq("activo", true).order("nombre")
     ]);
     if (ev.error) throw ev.error;
     evals = ev.data || [];
@@ -88,6 +89,8 @@
     formatos = fm.data || [];
     seguimiento = sg.data || [];
     staff = st.data || [];
+    contactos = ct.data || [];
+    director = role === "admin" || (staff.find((s) => s.user_id === user.id) || {}).area === "direccion";
     renderSummary();
     renderEvals();
     renderClients();
@@ -197,6 +200,7 @@
     ["razon_social", "rfc", "pais", "domicilio", "ciudad", "estado", "actividad", "representante", "cargo", "telefono", "email", "user_id", "responsable_kinam", "notas"].forEach((k) => { f[k].value = d[k] || ""; });
     $(".auth__msg", f).hidden = true;
     $("#ex-projects-wrap").hidden = !cliente;
+    renderContactos();
     renderClienteProjects();
     $("#ex-detail").hidden = false;
     $("#ex-detail").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -208,7 +212,8 @@
     $("#ex-projects").innerHTML = ps.length ? ps.map((p) => {
       const chips = ["requisitos", "carta"].map((t) => {
         const r = formatos.find((f) => f.proyecto_id === p.id && f.tipo === t);
-        return r ? `<button class="chip" type="button" data-formato="${r.id}">${FNAME[t]} ${badge2(r.status)}</button>` : `<span class="chip">${FNAME[t]} <span class="badge badge--pendiente">Pendiente</span></span>`;
+        if (r) return `<button class="chip" type="button" data-formato="${r.id}">${FNAME[t]} ${badge2(r.status)}</button>`;
+        return director ? `<button class="chip" type="button" data-crear="${t}" title="Llenar desde Interno">${FNAME[t]} <span class="badge badge--pendiente">Pendiente · llenar</span></button>` : `<span class="chip">${FNAME[t]} <span class="badge badge--pendiente">Pendiente</span></span>`;
       }).join("");
       const ev = evals.filter((e) => e.proyecto_id === p.id).map((e) => `<button class="chip" type="button" data-open="${e.id}">Evaluación técnica ${badge(e.status)}</button>`).join("");
       const log = seguimiento.filter((s) => s.proyecto_id === p.id).slice(0, 8);
@@ -252,6 +257,9 @@
     $("#fmm-notes").value = openFm.kinam_notes || "";
     $(".auth__msg", $("#fmm-form")).hidden = true;
     $("#fmm-doc").innerHTML = formatoHTML(openFm);
+    $("#fmm-edit").hidden = true;
+    $("#fmm-doc").hidden = false;
+    $("#fmm-edit-btn").hidden = !director;
     $("#fm-modal").hidden = false;
     $("#fmm-close").focus();
   }
@@ -394,6 +402,8 @@
     if (fb) return openFormato(fb.dataset.formato);
     if (!card) return;
     const pid = card.dataset.proyecto;
+    const nb = e.target.closest("[data-crear]");
+    if (nb) return crearFormato(pid, nb.dataset.crear);
     if (e.target.closest("[data-psave]")) {
       const patch = { etapa: $("[data-etapa]", card).value, kinam_notes: $("[data-pnotes]", card).value.trim() || null };
       const { error } = await client.from("proyectos").update(patch).eq("id", pid);
@@ -408,6 +418,93 @@
       await loadData(); openCliente(cliente.id);
     }
   });
+
+  // Responsables de la empresa abierta
+  const contactosDe = (cid) => contactos.filter((c) => c.cliente_id === cid);
+  function renderContactos() {
+    if (cliente) $("#ex-contactos").innerHTML = F.contactosHTML(contactosDe(cliente.id), { prefix: "ex" });
+  }
+  async function saveContact(cid, perfil, nombre, extra = {}) {
+    const { data, error } = await client.from("contactos").insert({ cliente_id: cid, perfil, nombre, ...extra }).select().single();
+    if (error) { alert("No se pudo guardar: " + message(error)); return null; }
+    contactos.push(data);
+    renderContactos();
+    return data;
+  }
+  $("#ex-contactos").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const f = e.target;
+    const v = Object.fromEntries(new FormData(f));
+    if (!v.nombre.trim()) return say(f, "Escribe el nombre.");
+    const row = await saveContact(cliente.id, v.perfil, v.nombre.trim(), { cargo: v.cargo.trim() || null, telefono: v.telefono.trim() || null, email: v.email.trim() || null });
+    if (row) say($("[data-contacto-form]", $("#ex-contactos")), "Persona agregada al listado.", true);
+  });
+  $("#ex-contactos").addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-contacto-off]");
+    if (!b || !confirm("¿Quitar a esta persona del listado?")) return;
+    const { error } = await client.from("contactos").update({ activo: false }).eq("id", b.dataset.contactoOff);
+    if (error) return alert(message(error));
+    contactos = contactos.filter((c) => c.id !== b.dataset.contactoOff);
+    renderContactos();
+  });
+
+  // Dirección: llenar o corregir el contenido de un formato desde Interno.
+  function prefillFormato(p, tipo) {
+    const c = empresa(p.cliente_id);
+    const d = tipo === "requisitos"
+      ? { empresa: c.razon_social, tax_id: c.rfc, pais: c.pais, ciudad: c.ciudad, estado: c.estado, actividad: c.actividad, resp_proyecto: c.representante, telefono: c.telefono, email: c.email }
+      : { consumidor: c.razon_social, rfc: c.rfc, domicilio: [c.domicilio, c.ciudad, c.estado].filter(Boolean).join(", "), representante: c.representante, cargo: c.cargo, ciudad: c.ciudad, estado: c.estado, fecha: new Date().toISOString().slice(0, 10), a_domicilio: p.ubicacion };
+    return Object.fromEntries(Object.entries(d).filter(([, v]) => v));
+  }
+  async function crearFormato(pid, tipo) {
+    const p = proyecto(pid);
+    const { data, error } = await client.from("formatos").insert({ proyecto_id: pid, tipo, data: prefillFormato(p, tipo), status: "borrador" }).select().single();
+    if (error) return alert(message(error));
+    formatos = [data, ...formatos.filter((x) => x.id !== data.id)];
+    renderFormatos(); renderExpedientes();
+    if (cliente) renderClienteProjects();
+    openFormato(data.id);
+    editFormato();
+  }
+  function editFormato() {
+    if (!openFm || !director) return;
+    const form = $("#fmm-edit");
+    const schema = openFm.tipo === "carta" ? F.CARTA : F.REQUISITOS;
+    const box = $("[data-fields]", form);
+    const cid = proyecto(openFm.proyecto_id).cliente_id;
+    F.render(box, schema, openFm.data || {}, { prefix: "fmm" });
+    F.enhance(box, { contactos: contactosDe(cid), saveContact: (perfil, nombre) => saveContact(cid, perfil, nombre) });
+    $(".auth__msg", form).hidden = true;
+    form.hidden = false;
+    $("#fmm-doc").hidden = true;
+    box.querySelector("input, textarea")?.focus();
+  }
+  $("#fmm-edit-btn").addEventListener("click", editFormato);
+  $("#fmm-edit-cancel").addEventListener("click", () => { $("#fmm-edit").hidden = true; $("#fmm-doc").hidden = false; });
+  $("#fmm-edit").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const f = e.currentTarget;
+    const schema = openFm.tipo === "carta" ? F.CARTA : F.REQUISITOS;
+    const { data, error } = await client.from("formatos").update({ data: F.collect($("[data-fields]", f), schema) }).eq("id", openFm.id).select().single();
+    if (error) return say(f, message(error));
+    formatos = formatos.map((x) => (x.id === data.id ? data : x));
+    openFm = data;
+    $("#fmm-doc").innerHTML = formatoHTML(data);
+    renderFormatos();
+    say(f, "Cambios guardados. Quedó registrado en el seguimiento del proyecto.", true);
+  });
+
+  // Cambios en vivo: un formato guardado por el cliente aparece al momento.
+  function live() {
+    client.channel("formatos-interno").on("postgres_changes", { event: "*", schema: "public", table: "formatos" }, (ev) => {
+      const row = ev.new;
+      if (!row || !row.id) return;
+      formatos = [row, ...formatos.filter((x) => x.id !== row.id)];
+      renderFormatos(); renderSummary(); renderExpedientes();
+      if (cliente) renderClienteProjects();
+      if (openFm && openFm.id === row.id && $("#fmm-edit").hidden) { openFm = row; $("#fmm-doc").innerHTML = formatoHTML(row); }
+    }).subscribe();
+  }
 
   // Formatos: eventos
   $("#fm-tipo").addEventListener("change", renderFormatos);
@@ -551,7 +648,7 @@
     $$("[data-admin]").forEach((a) => { a.hidden = role !== "admin"; });
     try { if (!sessionStorage.getItem("kinam-log")) { await client.from("access_log").insert({ user_agent: navigator.userAgent }); sessionStorage.setItem("kinam-log", "1"); } } catch (_) { /* la bitácora no bloquea el panel */ }
     window.addEventListener("hashchange", route);
-    try { await loadData(); } catch (err) { $("#main").insertAdjacentHTML("afterbegin", `<p class="auth__msg">No se pudieron cargar los datos: ${esc(message(err))}</p>`); }
+    try { await loadData(); live(); } catch (err) { $("#main").insertAdjacentHTML("afterbegin", `<p class="auth__msg">No se pudieron cargar los datos: ${esc(message(err))}</p>`); }
     // Mi panel (panel.js) arranca con este contexto; puede cargar antes o después que este archivo.
     window.KinamInterno = { client, user, role, staff, profiles: clients, proyectos, empresas, AREAS };
     document.dispatchEvent(new CustomEvent("kinam:interno", { detail: window.KinamInterno }));

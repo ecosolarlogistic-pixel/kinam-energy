@@ -5,16 +5,20 @@
   const YND = ["Sí", "No", "Por determinar"];
   const YNE = ["Sí", "No", "Requiere estudio"];
   const f = (k, l, t = "text", extra = {}) => ({ k, l, t, ...extra });
-  const n = (k, l, u) => f(k, l, "num", { u });
+  const n = (k, l, u, extra = {}) => f(k, l, "num", { u, ...extra });
   const yn = (k, l, o = YN) => f(k, l, "radio", { o });
   const ch = (k, l, o, other = true) => f(k, l, "checks", { o, other });
   const rd = (k, l, o, other = true) => f(k, l, "radio", { o, other });
 
   const REQUISITOS = [
     { t: "Identificación del cliente y del proyecto", fields: [
-      f("empresa", "Empresa / Grupo"), f("tax_id", "RFC / CIF / Tax ID"), f("pais", "País"), f("direccion", "Dirección del proyecto"),
-      f("gps", "Coordenadas GPS"), f("actividad", "Actividad industrial"), f("resp_proyecto", "Persona responsable del proyecto"),
-      f("resp_tecnico", "Responsable técnico"), f("resp_electrico", "Responsable eléctrico"), f("telefono", "Teléfono", "tel"), f("email", "Correo", "email"),
+      f("empresa", "Empresa / Grupo"), f("tax_id", "RFC / CIF / Tax ID"), f("pais", "País", "text", { geo: "country" }), f("actividad", "Actividad industrial"),
+      f("calle", "Calle del proyecto", "text", { geo: "street" }), f("numero", "Número", "text", { geo: "number" }),
+      f("ciudad", "Ciudad", "text", { geo: "city" }), f("estado", "Estado", "text", { geo: "state" }),
+      f("gps", "Coordenadas GPS (se calculan con la dirección)", "text", { gps: true }),
+      f("resp_proyecto", "Persona responsable del proyecto", "text", { who: "proyecto" }),
+      f("resp_tecnico", "Responsable técnico", "text", { who: "tecnico" }), f("resp_electrico", "Responsable eléctrico", "text", { who: "electrico" }),
+      f("telefono", "Teléfono", "tel"), f("email", "Correo", "email"),
       ch("tipo_instalacion", "Tipo de instalación", ["Data Center", "Minería", "Cementera", "Cerámica", "Industria pesada", "Industria manufacturera", "Telecomunicaciones", "Hospital / infraestructura crítica", "Instalación aislada"]),
       ch("situacion", "Situación de la instalación", ["Existente y operativa", "Existente en ampliación", "Nueva construcción", "Proyecto en fase de diseño", "Instalación aislada de red", "Conectada a red eléctrica"], false)
     ] },
@@ -29,7 +33,7 @@
       yn("variaciones", "¿Existen variaciones bruscas de carga?"), n("var_magnitud", "Magnitud aproximada de la variación", "MW"), f("var_tiempo", "Tiempo de variación (segundos/minutos)")
     ] },
     { t: "Suministro eléctrico actual", fields: [
-      rd("frecuencia", "Frecuencia de la instalación", ["50 Hz", "60 Hz"], false), n("tension_cia", "Tensión de suministro de la compañía eléctrica", "kV"),
+      rd("frecuencia", "Frecuencia de la instalación", ["50 Hz", "60 Hz"], false), n("tension_cia", "Tensión de suministro de la compañía eléctrica", "kV", { max: 800, ph: "Ej. 13.8, 34.5, 115 o 400" }),
       n("potencia_contratada", "Potencia contratada", "MW/MVA"), n("acometidas", "Número de acometidas eléctricas"),
       yn("doble_acometida", "¿Existe doble acometida?"), yn("redundancia", "¿Existe redundancia N+1 / N+N?"), f("distribuidora", "Empresa distribuidora eléctrica"),
       yn("gen_propia", "¿Existe generación propia actualmente?"), ch("gen_tipo", "Tipo de generación propia", ["Diésel", "Gas", "Solar", "Eólica", "Baterías/BESS", "Cogeneración"]),
@@ -45,11 +49,11 @@
     { t: "Transformadores", fields: [
       yn("trafo_existe", "¿Existen transformadores disponibles para integrar la nueva generación?"), n("trafo_cantidad", "Cantidad"), f("trafo_fabricante", "Fabricante"),
       n("trafo_potencia", "Potencia", "kVA/MVA"), f("trafo_primaria", "Tensión primaria"), f("trafo_secundaria", "Tensión secundaria"), f("trafo_vectorial", "Grupo vectorial"),
-      n("trafo_impedancia", "Impedancia", "%"), n("trafo_anio", "Año de fabricación"), n("trafo_carga_media", "Carga media actual", "%"), n("trafo_carga_max", "Carga máxima", "%"),
+      n("trafo_impedancia", "Impedancia", "%"), n("trafo_anio", "Año de fabricación", "", { raw: true }), n("trafo_carga_media", "Carga media actual", "%"), n("trafo_carga_max", "Carga máxima", "%"),
       n("trafo_libre", "Capacidad libre estimada", "MVA"), yn("trafo_nuevos", "¿Es necesario instalar nuevos transformadores?", YND)
     ] },
     { t: "Subestación / centro de transformación", fields: [
-      yn("sub_existe", "¿Existe subestación propia del cliente?"), n("sub_entrada", "Tensión de entrada", "kV"), f("sub_salida", "Tensión de salida (kV/V)"),
+      yn("sub_existe", "¿Existe subestación propia del cliente?"), n("sub_entrada", "Tensión de entrada", "kV", { max: 800, ph: "Ej. 115" }), f("sub_salida", "Tensión de salida (kV/V)"),
       n("sub_potencia", "Potencia instalada", "MVA"), n("sub_disponible", "Capacidad disponible", "MVA"), n("sub_trafos", "Número de transformadores"),
       yn("sub_espacio", "Espacio disponible para nuevas celdas"), yn("sub_reserva", "¿Dispone de celdas de reserva?"),
       yn("sub_acometida", "¿Es posible incorporar nueva acometida desde los generadores?", YNE)
@@ -160,8 +164,18 @@
   const esc = (t) => String(t ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const fields = (schema) => schema.flatMap((s) => s.fields);
 
+  // Números con comas de miles (es-MX): "1234567.5" → "1,234,567.5". Los años y similares van sin comas.
+  const numText = (v, raw) => {
+    if (v === undefined || v === null || v === "") return "";
+    if (raw) return String(v);
+    const [i, d] = String(v).split(".");
+    return i.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (d !== undefined ? "." + d : "");
+  };
+  const numParse = (t) => { const c = String(t).replace(/,/g, "").trim(); return c === "" || isNaN(Number(c)) ? null : Number(c); };
+
   // Formulario editable o de solo lectura.
   function render(el, schema, data = {}, { readonly = false, prefix = "fm" } = {}) {
+    if (data.direccion && !data.calle) data = { ...data, calle: data.direccion }; // fichas anteriores con dirección en un solo campo
     el.innerHTML = schema.map((s, i) => `
       <fieldset class="fm__sec">
         <legend><span class="mono">${String(i + 1).padStart(2, "0")}</span> ${esc(s.t)}</legend>
@@ -187,8 +201,121 @@
     const full = x.t === "area" || x.l.length > 46 ? " class=\"full\"" : "";
     const label = `<label for="${id}">${esc(x.l)}${x.u ? ` <span class="note">(${esc(x.u)})</span>` : ""}</label>`;
     if (x.t === "area") return `<div${full}>${label}<textarea id="${id}" name="${x.k}" rows="3"${dis}>${esc(v)}</textarea></div>`;
-    const type = x.t === "num" ? "number\" step=\"any\" inputmode=\"decimal" : x.t;
-    return `<div${full}>${label}<input id="${id}" name="${x.k}" type="${type}" value="${esc(v)}"${dis}></div>`;
+    if (x.t === "num") {
+      return `<div${full}>${label}<input id="${id}" name="${x.k}" type="text" inputmode="decimal" autocomplete="off" data-num${x.raw ? ' data-raw' : ""}${x.max ? ` data-max="${x.max}" data-unit="${esc(x.u)}"` : ""}${x.ph ? ` placeholder="${esc(x.ph)}"` : ""} value="${esc(numText(v, x.raw))}"${dis}><p class="fm__hint note" hidden></p></div>`;
+    }
+    const extra = (x.geo ? ` data-geo="${x.geo}"` : "") + (x.who ? ` data-who="${x.who}" list="${prefix}-dl-${x.who}" autocomplete="off"` : "") + (x.gps ? " data-gps" : "");
+    const after = x.gps ? `<p class="fm__hint note" data-gps-status>${v ? mapLink(v) : "Escribe calle, número, ciudad y estado y aquí aparecerán las coordenadas."}</p>`
+      : x.who ? `<datalist id="${prefix}-dl-${x.who}"></datalist>${ro ? "" : `<button class="link fm__save-who" type="button" data-save-who="${x.who}" hidden>Guardar en el listado de la empresa</button>`}` : "";
+    return `<div${full}>${label}<input id="${id}" name="${x.k}" type="${x.t}" value="${esc(v)}"${extra}${dis}>${after}</div>`;
+  }
+
+  // "20.67, -103.35" o un enlace de Google Maps → liga para abrir el mapa.
+  function mapLink(v) {
+    const t = String(v).trim();
+    const href = /^https?:\/\//.test(t) ? t : "https://www.google.com/maps?q=" + encodeURIComponent(t);
+    return `<a href="${esc(href)}" target="_blank" rel="noopener">Ver en el mapa</a>`;
+  }
+
+  // Ayudas del formulario ya pintado: comas en números, aviso de unidades, coordenadas automáticas
+  // y responsables tomados del listado de la empresa.
+  //   contactos      [{ perfil, nombre, telefono, email }] activos de la empresa
+  //   saveContact    async (perfil, nombre) => fila guardada (si no se pasa, no se ofrece guardar)
+  function enhance(el, { contactos = [], saveContact = null } = {}) {
+    el.querySelectorAll("input[data-num]").forEach((i) => {
+      const hint = i.parentElement.querySelector(".fm__hint");
+      const check = () => {
+        if (!hint) return;
+        const max = Number(i.dataset.max), n = numParse(i.value);
+        const off = max && n !== null && n > max;
+        hint.hidden = !off;
+        if (off) {
+          const fixed = n / 1000;
+          hint.innerHTML = `¿Está en volts? ${numText(n)} V = <strong>${numText(fixed)} ${esc(i.dataset.unit)}</strong>. <button class="link" type="button">Usar ${numText(fixed)}</button>`;
+          hint.querySelector("button").onclick = () => { i.value = numText(fixed); check(); i.dispatchEvent(new Event("input", { bubbles: true })); };
+        }
+      };
+      i.addEventListener("input", () => {
+        if (i.hasAttribute("data-raw")) { i.value = i.value.replace(/[^\d]/g, ""); return; }
+        const caret = i.value.slice(0, i.selectionStart).replace(/,/g, "").length;
+        let c = i.value.replace(/[^\d.\-]/g, "").replace(/(?!^)-/g, "");
+        const dot = c.indexOf(".");
+        if (dot >= 0) c = c.slice(0, dot + 1) + c.slice(dot + 1).replace(/\./g, "");
+        i.value = numText(c);
+        let pos = 0, seen = 0;
+        while (pos < i.value.length && seen < caret) { if (i.value[pos] !== ",") seen++; pos++; }
+        i.setSelectionRange(pos, pos);
+        check();
+      });
+      check();
+    });
+
+    // Coordenadas a partir de la dirección (OpenStreetMap). Si la persona escribe sus propias coordenadas, se respetan.
+    const gps = el.querySelector("input[data-gps]");
+    if (gps && !gps.disabled) {
+      const status = el.querySelector("[data-gps-status]");
+      const part = (g) => (el.querySelector(`[data-geo="${g}"]`) || {}).value?.trim() || "";
+      gps.dataset.auto = gps.value ? "0" : "1";
+      gps.addEventListener("input", () => { gps.dataset.auto = gps.value.trim() ? "0" : "1"; status.innerHTML = gps.value.trim() ? mapLink(gps.value) : ""; });
+      let timer = null, seq = 0;
+      const locate = async () => {
+        const street = [part("street"), part("number")].filter(Boolean).join(" ");
+        const city = part("city"), state = part("state");
+        if (gps.dataset.auto !== "1") return;
+        if (!street || !(city || state)) { status.textContent = "Escribe calle, número, ciudad y estado y aquí aparecerán las coordenadas."; return; }
+        const run = ++seq;
+        status.textContent = "Buscando coordenadas…";
+        try {
+          const q = new URLSearchParams({ format: "jsonv2", limit: "1", "accept-language": "es", street, city, state, country: part("country") || "México" });
+          let r = await (await fetch("https://nominatim.openstreetmap.org/search?" + q)).json();
+          if (!r.length) r = await (await fetch("https://nominatim.openstreetmap.org/search?" + new URLSearchParams({ format: "jsonv2", limit: "1", "accept-language": "es", q: [street, city, state, part("country") || "México"].filter(Boolean).join(", ") }))).json();
+          if (run !== seq) return;
+          if (!r.length) { status.textContent = "No encontramos esa dirección. Revísala o escribe las coordenadas a mano."; return; }
+          gps.value = `${Number(r[0].lat).toFixed(6)}, ${Number(r[0].lon).toFixed(6)}`;
+          gps.dispatchEvent(new Event("input", { bubbles: true }));
+          gps.dataset.auto = "1";
+          status.innerHTML = `Ubicación encontrada · ${mapLink(gps.value)}`;
+        } catch { if (run === seq) status.textContent = "No se pudieron calcular las coordenadas. Puedes escribirlas a mano."; }
+      };
+      el.querySelectorAll("[data-geo]").forEach((g) => g.addEventListener("input", () => {
+        if (!gps.value.trim()) gps.dataset.auto = "1";
+        if (gps.dataset.auto === "1") { gps.value = ""; status.textContent = "Calculando coordenadas…"; }
+        clearTimeout(timer); timer = setTimeout(locate, 1200);
+      }));
+    }
+
+    // Responsables: sugerencias del listado y opción de guardar a una persona nueva.
+    const list = contactos.filter((c) => c.activo !== false);
+    el.querySelectorAll("input[data-who]").forEach((i) => {
+      const who = i.dataset.who;
+      const dl = i.parentElement.querySelector("datalist");
+      const btn = i.parentElement.querySelector("[data-save-who]");
+      const fill = () => {
+        dl.innerHTML = list.filter((c) => c.perfil === who).map((c) => `<option value="${esc(c.nombre)}">${esc([c.cargo, c.telefono, c.email].filter(Boolean).join(" · "))}</option>`).join("");
+      };
+      const known = () => list.some((c) => c.perfil === who && c.nombre.toLowerCase() === i.value.trim().toLowerCase());
+      fill();
+      if (!btn) return;
+      const sync = () => { btn.hidden = !saveContact || !i.value.trim() || known(); };
+      i.addEventListener("input", () => {
+        sync();
+        // Al elegir a la persona responsable del proyecto, completa su teléfono y correo si están vacíos.
+        const c = list.find((x) => x.perfil === who && x.nombre === i.value);
+        if (c && who === "proyecto") {
+          const tel = el.querySelector('[name="telefono"]'), mail = el.querySelector('[name="email"]');
+          if (tel && !tel.value && c.telefono) tel.value = c.telefono;
+          if (mail && !mail.value && c.email) mail.value = c.email;
+        }
+      });
+      btn.addEventListener("click", async () => {
+        btn.disabled = true;
+        try {
+          const row = await saveContact(who, i.value.trim());
+          if (row) { list.push(row); fill(); btn.textContent = "Guardado en el listado"; setTimeout(() => { btn.textContent = "Guardar en el listado de la empresa"; sync(); }, 1500); }
+        } finally { btn.disabled = false; }
+      });
+      sync();
+    });
   }
 
   function collect(el, schema) {
@@ -203,14 +330,34 @@
       } else {
         const i = el.querySelector(`[name="${x.k}"]`);
         const val = i ? i.value.trim() : "";
-        if (val !== "") out[x.k] = x.t === "num" ? Number(val) : val;
+        if (val !== "") {
+          if (x.t !== "num") out[x.k] = val;
+          else if (numParse(val) !== null) out[x.k] = numParse(val);
+        }
       }
       if (x.other) {
         const o = el.querySelector(`[name="${x.k}__otro"]`);
         if (o && o.value.trim()) out[x.k + "__otro"] = o.value.trim();
       }
     });
+    // Dirección completa para quien la lea de corrido (reportes, carta).
+    const dir = [[out.calle, out.numero].filter(Boolean).join(" "), out.ciudad, out.estado].filter(Boolean).join(", ");
+    if (dir && fields(schema).some((x) => x.k === "calle")) out.direccion = dir;
     return out;
+  }
+
+  // Listado de responsables de una empresa (área de cliente e Interno).
+  const PERFILES = { proyecto: "Responsable del proyecto", tecnico: "Responsable técnico", electrico: "Responsable eléctrico" };
+  function contactosHTML(list, { prefix = "ct" } = {}) {
+    const rows = list.filter((c) => c.activo !== false);
+    return `${rows.length ? `<div class="table-wrap"><table class="table"><thead><tr><th>Nombre</th><th>Perfil</th><th>Cargo</th><th>Teléfono</th><th>Correo</th><th></th></tr></thead><tbody>${rows.map((c) => `<tr><td>${esc(c.nombre)}</td><td>${PERFILES[c.perfil]}</td><td>${esc(c.cargo || "—")}</td><td>${esc(c.telefono || "—")}</td><td>${esc(c.email || "—")}</td><td><button class="link" type="button" data-contacto-off="${c.id}">Quitar</button></td></tr>`).join("")}</tbody></table></div>` : '<p class="note">Aún no hay personas en el listado.</p>'}
+      <form class="form" data-contacto-form novalidate><div class="form__grid">
+        <div><label for="${prefix}-c-nombre">Nombre</label><input id="${prefix}-c-nombre" name="nombre" required></div>
+        <div><label for="${prefix}-c-perfil">Perfil</label><select id="${prefix}-c-perfil" name="perfil">${Object.entries(PERFILES).map(([k, v]) => `<option value="${k}">${v}</option>`).join("")}</select></div>
+        <div><label for="${prefix}-c-cargo">Cargo</label><input id="${prefix}-c-cargo" name="cargo"></div>
+        <div><label for="${prefix}-c-tel">Teléfono</label><input id="${prefix}-c-tel" name="telefono" type="tel"></div>
+        <div><label for="${prefix}-c-mail">Correo</label><input id="${prefix}-c-mail" name="email" type="email"></div>
+      </div><p class="auth__msg" role="alert" hidden></p><div class="fm__actions"><button class="btn btn--ghost btn--sm" type="submit">Agregar persona</button></div></form>`;
   }
 
   // Avance: cuántos campos tienen respuesta.
@@ -226,7 +373,7 @@
     if (Array.isArray(v)) v = v.join(", ");
     if (data[x.k + "__otro"]) v = (v ? v + ", " : "") + "Otro: " + data[x.k + "__otro"];
     if (v === undefined || v === "") return "";
-    return typeof v === "number" ? v.toLocaleString("es-MX") + (x.u ? " " + x.u : "") : String(v);
+    return typeof v === "number" ? (x.raw ? String(v) : v.toLocaleString("es-MX", { maximumFractionDigits: 6 })) + (x.u ? " " + x.u : "") : String(v);
   }
 
   // Ficha imprimible de los requisitos.
@@ -299,5 +446,5 @@
   const ESTADOS = { borrador: "Borrador", enviado: "Enviado", revision: "En revisión", observado: "Con observaciones", aprobado: "Aprobado" };
   const ETAPAS = { evaluacion: "Evaluación", requisitos: "Requisitos de instalación", carta: "Carta compromiso", contrato: "Contrato", instalacion: "Instalación", operacion: "Operación", cancelado: "Cancelado" };
 
-  window.KinamFormatos = { REQUISITOS, CARTA, CARTA_TEXTO, ESTADOS, ETAPAS, render, collect, progress, show, requisitosHTML, cartaHTML, cartaValues, fields };
+  window.KinamFormatos = { REQUISITOS, CARTA, CARTA_TEXTO, ESTADOS, ETAPAS, PERFILES, render, enhance, collect, progress, show, requisitosHTML, cartaHTML, cartaValues, contactosHTML, mapLink, fields };
 })();

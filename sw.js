@@ -1,6 +1,6 @@
 // KINAM Energy | service worker: la app abre rápido y muestra un aviso si no hay internet.
 // Cambia VERSION al publicar cambios de diseño para que los dispositivos se actualicen.
-const VERSION = "kinam-2026-10-21d";
+const VERSION = "kinam-2026-10-22a";
 const CORE = [
   "/", "/acceso.html", "/area/", "/interno/", "/offline.html",
   "/assets/css/styles.css", "/assets/css/portal.css", "/assets/css/doc.css",

@@ -11,13 +11,13 @@
     requisitos: { schema: F.REQUISITOS, name: "Requisitos de instalación", form: "#rq-form", view: "#view-requisitos" },
     carta: { schema: F.CARTA, name: "Carta compromiso", form: "#ct-form", view: "#view-carta" }
   };
-  let user = null, profile = {}, cliente = null, proyectos = [], formatos = [], seguimiento = [], evals = [];
+  let user = null, profile = {}, cliente = null, proyectos = [], formatos = [], seguimiento = [], evals = [], contactos = [];
   const selected = {};
 
   if (!ready) return location.replace("/acceso.html");
 
   const esc = (t) => String(t ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const num = (v) => (v === "" || v == null ? null : Number(v));
+  const num = (v) => (v === "" || v == null ? null : Number(String(v).replace(/,/g, "")));
   const fmt = (n, unit) => (n == null ? "—" : Number(n).toLocaleString("es-MX") + " " + unit);
   const day = (d) => new Date(d).toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" });
   const badge = (s, label) => `<span class="badge badge--${esc(s)}">${esc(label || s)}</span>`;
@@ -59,10 +59,14 @@
   async function loadAll() {
     const c = await client.from("clientes").select("*").eq("user_id", user.id).order("created_at").limit(1).maybeSingle();
     cliente = c.data || null;
-    proyectos = []; formatos = []; seguimiento = [];
+    proyectos = []; formatos = []; seguimiento = []; contactos = [];
     if (cliente) {
-      const p = await client.from("proyectos").select("*").eq("cliente_id", cliente.id).order("created_at", { ascending: false });
+      const [p, ct] = await Promise.all([
+        client.from("proyectos").select("*").eq("cliente_id", cliente.id).order("created_at", { ascending: false }),
+        client.from("contactos").select("*").eq("cliente_id", cliente.id).eq("activo", true).order("nombre")
+      ]);
       proyectos = p.data || [];
+      contactos = ct.data || [];
       const ids = proyectos.map((x) => x.id);
       if (ids.length) {
         const [fm, sg] = await Promise.all([
@@ -80,6 +84,7 @@
 
   function renderAll() {
     renderCliente();
+    renderContactos();
     renderProjects();
     renderEvaluations();
     renderSteps();
@@ -153,7 +158,7 @@
     const c = cliente || {};
     const p = proyectos.find((x) => x.id === selected[tipo]) || {};
     if (tipo === "requisitos") {
-      return { empresa: c.razon_social, tax_id: c.rfc, pais: c.pais, direccion: p.ubicacion, actividad: c.actividad, resp_proyecto: c.representante, telefono: c.telefono, email: c.email };
+      return { empresa: c.razon_social, tax_id: c.rfc, pais: c.pais, ciudad: c.ciudad, estado: c.estado, actividad: c.actividad, resp_proyecto: c.representante, telefono: c.telefono, email: c.email };
     }
     return { consumidor: c.razon_social, rfc: c.rfc, domicilio: [c.domicilio, c.ciudad, c.estado].filter(Boolean).join(", "), representante: c.representante, cargo: c.cargo,
       ciudad: c.ciudad, estado: c.estado, fecha: new Date().toISOString().slice(0, 10), a_domicilio: p.ubicacion };
@@ -174,6 +179,7 @@
     const data = row ? row.data : Object.fromEntries(Object.entries(prefill(tipo)).filter(([, v]) => v));
     const ro = !editable(row);
     F.render($("[data-fields]", form), cfg.schema, data, { readonly: ro, prefix: tipo });
+    F.enhance($("[data-fields]", form), { contactos, saveContact });
     $("[data-status]", view).innerHTML = row ? badge(row.status, F.ESTADOS[row.status]) : badge("pendiente", "Sin empezar");
     $("[data-progress]", view).textContent = F.progress(cfg.schema, data) + "% completado";
     const notes = $("[data-notes]", view);
@@ -254,6 +260,36 @@
       if (tipo === "carta") preview();
     });
   });
+
+  // Responsables de la empresa (listado por perfil)
+  function renderContactos() {
+    const box = $("#contactos-box");
+    box.innerHTML = cliente ? F.contactosHTML(contactos, { prefix: "cl" }) : '<p class="note">Guarda primero los datos de tu empresa.</p>';
+  }
+  async function saveContact(perfil, nombre, extra = {}) {
+    const { data, error } = await client.from("contactos").insert({ cliente_id: cliente.id, perfil, nombre, ...extra }).select().single();
+    if (error) { alert("No se pudo guardar: " + message(error)); return null; }
+    contactos.push(data);
+    renderContactos();
+    return data;
+  }
+  $("#contactos-box").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const f = e.target;
+    const v = Object.fromEntries(new FormData(f));
+    if (!v.nombre.trim()) return say(f, "Escribe el nombre.");
+    const row = await saveContact(v.perfil, v.nombre.trim(), { cargo: v.cargo.trim() || null, telefono: v.telefono.trim() || null, email: v.email.trim() || null });
+    if (row) say($("[data-contacto-form]", $("#contactos-box")), "Persona agregada al listado.", true);
+  });
+  $("#contactos-box").addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-contacto-off]");
+    if (!b || !confirm("¿Quitar a esta persona del listado?")) return;
+    const { error } = await client.from("contactos").update({ activo: false }).eq("id", b.dataset.contactoOff);
+    if (error) return alert(message(error));
+    contactos = contactos.filter((c) => c.id !== b.dataset.contactoOff);
+    renderContactos();
+  });
+  F.enhance($("#eval-form"));
 
   // Alta de cliente y proyectos
   $("#cliente-form").addEventListener("submit", async (e) => {

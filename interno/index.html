@@ -166,6 +166,9 @@
           </form>
 
           <div id="ex-projects-wrap" hidden>
+            <h3 class="mono">RESPONSABLES DE LA EMPRESA</h3>
+            <p class="note">Personas responsables del proyecto, técnicas o eléctricas. Aparecen como opciones en los formatos.</p>
+            <div id="ex-contactos" aria-live="polite"></div>
             <h3 class="mono">PROYECTOS</h3>
             <form class="form toolbar toolbar--form" id="ex-proj-form" novalidate>
               <div><label for="ep-nombre">Nuevo proyecto</label><input id="ep-nombre" name="nombre" required placeholder="Nombre del proyecto o sitio"></div>
@@ -336,7 +339,13 @@
           <div class="full"><label for="fmm-notes">Comentarios para el cliente</label><textarea id="fmm-notes" name="kinam_notes" rows="3"></textarea></div>
         </div>
         <p class="auth__msg" role="alert" hidden></p>
-        <div class="fm__actions"><button class="btn btn--primary" type="submit">Guardar</button><button class="btn btn--ghost" type="button" id="fmm-pdf">Ver PDF</button><button class="btn btn--ghost" type="button" data-fsend="whatsapp">Enviar por WhatsApp</button><button class="btn btn--ghost" type="button" data-fsend="correo">Enviar por correo</button></div>
+        <div class="fm__actions"><button class="btn btn--primary" type="submit">Guardar</button><button class="btn btn--ghost" type="button" id="fmm-pdf">Ver PDF</button><button class="btn btn--ghost" type="button" data-fsend="whatsapp">Enviar por WhatsApp</button><button class="btn btn--ghost" type="button" data-fsend="correo">Enviar por correo</button><button class="btn btn--ghost" type="button" id="fmm-edit-btn" hidden>Editar contenido</button></div>
+      </form>
+      <form class="form evalform fm" id="fmm-edit" novalidate hidden>
+        <p class="note">Edición de Dirección. Los cambios quedan en el seguimiento del proyecto y el cliente los ve al momento.</p>
+        <div data-fields></div>
+        <p class="auth__msg" role="alert" hidden></p>
+        <div class="fm__actions"><button class="btn btn--primary" type="submit">Guardar cambios</button><button class="btn btn--ghost" type="button" id="fmm-edit-cancel">Cancelar</button></div>
       </form>
       <div class="doc" id="fmm-doc"></div>
     </div>
